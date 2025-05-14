@@ -1,35 +1,33 @@
-import {useState} from 'react';
-export default function header() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [message, setMessage] = useState("");
-  function handleClickCraftAvabot(){
-    setMessage("Craft Avabot got clicked!")
-  }
-  function handleClickProfile(){
-    setMessage("Profile got clicked!")
-  }
-  function handleClickOrders(){
-    setMessage("Orders got clicked!")
-  }
+import { NavLink } from "react-router-dom";
+export default function Header() {
   return (
-    <>
-      <header>
+    <header>
+      <nav className="inline-flex flex-row">
         <img
           src="/src/assets/images/Custombot.png"
-          width="50px"
-          height="auto"
+          width="auto"
+          height="60px"
           alt="this is custombot logo"
         />
-        <nav>
-          <ul className="nav-list">
-            <li className="nav-list-item" onClick={handleClickCraftAvabot}>Craft your Avabot</li>
-            <li className="nav-list-item" onClick={handleClickProfile}>Profile</li>
-            <li className="nav-list-item" onClick={handleClickOrders}>Orders</li>
-          </ul>
-          
-        </nav>
-        <p>{message}</p>
-      </header>
-    </>
+
+        <ul className="list-none p-0 inline-flex flex-row justify-center  text-white">
+          <li>
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/custombot" end>
+              Custom bot
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/profile" end>
+              Profile
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+    </header>
   );
 }

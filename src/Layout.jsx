@@ -2,7 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 const Layout = () => {
   return (
     <>
-      <div style={{ backgroundColor: "red" }}>
+      <div>
         <Outlet />
         <Link to="/home">Home</Link>
         <Link to="/profile">Profile</Link>

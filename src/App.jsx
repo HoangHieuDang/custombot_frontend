@@ -3,22 +3,17 @@ import "./App.css";
 import Home from "./Home";
 import CustomBot from "./CustomBot";
 import Profile from "./Profile";
-import Layout from "./Layout";
-import TestApi from "./TestApi";
+import Header from "./components/Header";
 
 function App() {
-
   return (
     <>
-      <TestApi />
-
       <BrowserRouter>
+        <Header />
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/custombot" element={<CustomBot />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/custombot" element={<CustomBot />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </>
