@@ -10,6 +10,8 @@ export default function Header() {
           alt="this is custombot logo"
         />
 
+        <div className="bg-red-700 w-5"></div>
+
         <ul className="list-none p-0 inline-flex flex-row justify-center  text-white">
           <li>
             <NavLink to="/" end>

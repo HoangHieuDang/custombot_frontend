@@ -4,6 +4,14 @@
 
 
 html{
-    background-color: #1e1e1e;
+    width: 100vw;
+    height: 100vh;
+    background-color: #3e3e3e;
     color: white;
 }
+
+#root{
+    width: 100vw;
+    height: 100vh;
+}
+    
