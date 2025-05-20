@@ -2,7 +2,7 @@
 export default {
   content: [
     './index.html',
-    './src/**/*.{js,ts,jsx,tsx}', // ✅ covers all routes/components
+    './src/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     extend: {},

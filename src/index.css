@@ -1,12 +1,11 @@
-@tailwind base;
-@tailwind components;
+@import "tailwindcss";
 @tailwind utilities;
 
 
 html{
     width: 100vw;
     height: 100vh;
-    background-color: #3e3e3e;
+    background-color: #1f1f1f;
     color: white;
 }
 
