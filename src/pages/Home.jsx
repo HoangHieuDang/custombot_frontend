@@ -7,7 +7,8 @@ const Home = () => {
           src="./src/assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />
-        <p className="z-0 text-9xl text-amber-200 font-extralight top-50">
+
+        <p className="z-0 text-9xl text-amber-200 font-extralight top-50 animate-marquee">
           Custom your own robot
         </p>
       </section>

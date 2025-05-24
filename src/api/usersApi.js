@@ -1,6 +1,6 @@
 import { BASE_URL } from "./apiConnConfig";
 
-export class Users {
+export default class Users {
   //Create
   async addUser(username, password, email) {
     const api_post_req = "/users/";

@@ -1,6 +1,6 @@
 import { BASE_URL } from "./apiConnConfig";
 
-class Bots {
+export default class Bots {
   //Create
   async createCustomBot({ user_id, name }) {
     if (!user_id || !name) {

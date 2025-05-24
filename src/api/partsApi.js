@@ -1,6 +1,6 @@
 //Create
 import { BASE_URL } from "./apiConnConfig";
-export class Parts {
+export default class Parts {
   async createPart({ name, type, model_path, img_path, price }) {
     if (!name || !type || !model_path || !img_path || !price) {
       console.error("Missing required fields");

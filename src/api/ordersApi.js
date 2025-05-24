@@ -1,6 +1,6 @@
 import { BASE_URL } from "./apiConnConfig";
 
-class Orders {
+export default class Orders {
   //Create
   async createOrder({
     user_id,
