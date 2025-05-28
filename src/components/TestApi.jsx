@@ -1,5 +1,5 @@
-import { Users } from "./api/usersApi";
-import { Parts } from "./api/partsApi";
+import { Users } from "../api/usersApi";
+import { Parts } from "../api/partsApi";
 
 import { useState } from "react";
 import { useEffect } from "react";
