@@ -1,12 +1,32 @@
 import { useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useEffect, Fragment } from "react";
 import { DynamicPart } from "./DynamicPart"; // Updated DynamicPart with lazy loading and error handling
-import { useEffect } from "react";
+import Parts from "../api/partsApi";
 
 const CustomBotPanel = () => {
   const basePath = "./src/assets/3d_assets/";
+  const partUrlsInit = {
+    skeleton: [],
+    head: [],
+    chest: [],
+    upper_waist: [],
+    lower_waist: [],
+    side_skirt: [],
+    front_skirt: [],
+    back_skirt: [],
+    shoulder: [],
+    upper_arm: [],
+    lower_arm: [],
+    hand: [],
+    upper_leg: [],
+    lower_leg: [],
+    foot: [],
+  };
 
+  const [partUrls, setPartUrls] = useState(partUrlsInit);
+  /* hardcoded example for partUrls
   const partUrls = {
     skeleton: ["custombot_skeleton.gltf"],
     head: ["cb_head_1.gltf", "cb_head_2.gltf"],
@@ -24,6 +44,35 @@ const CustomBotPanel = () => {
     lower_leg: ["cb_lower_leg_1.gltf", "cb_lower_leg_2.gltf"],
     foot: ["cb_foot_1.gltf", "cb_foot_2.gltf"],
   };
+  */
+
+  // Fetch parts from API
+  useEffect(() => {
+    const fetchParts = async () => {
+      try {
+        const partApi = new Parts();
+        const partslistObj = {};
+
+        for (const [partName] of Object.entries(partUrls)) {
+          const parts = await partApi.getPart({ part_type: partName });
+
+          if (Array.isArray(parts)) {
+            console.log(`${partName}:`, parts);
+            partslistObj[partName] = parts
+              .map((part) => part.model_path)
+              .filter(Boolean); // remove undefined/null
+          }
+        }
+
+        console.log("Fetched all parts:", partslistObj);
+        setPartUrls((prev) => ({ ...prev, ...partslistObj }));
+      } catch (error) {
+        console.warn("Fetch 3D models failed:", error);
+      }
+    };
+
+    fetchParts();
+  }, []);
 
   const symmetricalParts = [
     "shoulder",
@@ -50,6 +99,7 @@ const CustomBotPanel = () => {
   chest: 0,
   skeleton: 0              // static
   }*/
+
   const [currentParts, setCurrentParts] = useState(() => {
     const initialParts = {};
     for (const [part, urls] of Object.entries(partUrls)) {
@@ -111,6 +161,12 @@ const CustomBotPanel = () => {
           className="w-full px-4 py-2 border rounded-md"
         />
       </form>
+
+      <div className="flex flex-row bg-amber-600">
+        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">Save current bot</button>
+        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">Order</button>
+      </div>
+
       {/* 3D Canvas */}
       <div className="flex gap-6">
         <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
@@ -119,14 +175,33 @@ const CustomBotPanel = () => {
             camera={{ position: [0, 0, 15], fov: 100 }}
           >
             <ambientLight intensity={5} />
-            <directionalLight position={[1, 2, 5]} intensity={10} />
+            <directionalLight position={[1, 2, 5]} intensity={5} />
             <OrbitControls />
             <Suspense fallback={null}>
               {Object.entries(currentParts).map(([part, index]) => {
-                if (Array.isArray(index)) {
+                //skipping rendering if the body part key is empty or undefined
+                //or when index for left and right counter parts (symmetrical parts) is undefined or empty
+                if (
+                  index === undefined ||
+                  partUrls[part] === undefined ||
+                  (Array.isArray(index) &&
+                    (!partUrls[part][index[0]] || !partUrls[part][index[1]])) ||
+                  (!Array.isArray(index) && !partUrls[part][index])
+                ) {
+                  console.warn(
+                    `Skipping ${part} due to missing model_path or invalid index`,
+                    {
+                      part,
+                      index,
+                      urls: partUrls[part],
+                    }
+                  );
+                  return null;
+                }
+                if (Array.isArray(index) && index) {
                   const [leftIndex, rightIndex] = index;
                   return (
-                    <>
+                    <Fragment key={part}>
                       <DynamicPart
                         key={`${part}_left`}
                         url={`${basePath}${partUrls[part][leftIndex]}`}
@@ -143,7 +218,7 @@ const CustomBotPanel = () => {
                         rotation={[0, Math.PI / 2, 0]}
                         position={[0, 0, 0]}
                       />
-                    </>
+                    </Fragment>
                   );
                 } else {
                   return (
@@ -167,16 +242,14 @@ const CustomBotPanel = () => {
           {/* Dont have to customize skeleton part because it should be a static part */}
           {Object.entries(currentParts).map(([part, index]) => {
             if (part === "skeleton") return null;
-
             if (Array.isArray(index)) {
               // Symmetrical
-              const [leftIndex, rightIndex] = index;
               return (
                 <div key={part} className="mb-4">
                   <h3 className="text-lg font-medium text-white mb-1">
                     {part}
                   </h3>
-                  {/* Left index */}
+                  {/*Left side*/}
                   <div className="flex items-center gap-2 text-sm text-gray-300 mt-2 mb-2">
                     <span className="w-14">Left:</span>
                     <button onClick={() => switchPart(part, -1, "left")}>
@@ -185,6 +258,9 @@ const CustomBotPanel = () => {
                         src="./src/assets/ui_components/left-arrow.png"
                       />
                     </button>
+                    <span className="flex-1 text-center text-xs text-white truncate">
+                      {partUrls[part][index[0]]?.replace(".gltf","") || "N/A"}
+                    </span>
                     <button onClick={() => switchPart(part, 1, "left")}>
                       <img
                         className="h-5"
@@ -192,7 +268,7 @@ const CustomBotPanel = () => {
                       />
                     </button>
                   </div>
-                    {/* Right index */}
+                  {/*Right side*/}
                   <div className="flex items-center gap-2 text-sm text-gray-300 mt-2 mb-2">
                     <span className="w-14">Right:</span>
                     <button onClick={() => switchPart(part, -1, "right")}>
@@ -201,6 +277,9 @@ const CustomBotPanel = () => {
                         src="./src/assets/ui_components/left-arrow.png"
                       />
                     </button>
+                    <span className="flex-1 text-center text-xs text-white truncate">
+                      {partUrls[part][index[1]]?.replace(".gltf","") || "N/A"}
+                    </span>
                     <button onClick={() => switchPart(part, 1, "right")}>
                       <img
                         className="h-5"
@@ -225,6 +304,9 @@ const CustomBotPanel = () => {
                         src="./src/assets/ui_components/left-arrow.png"
                       />
                     </button>
+                    <span className="flex-1 text-center text-xs text-white truncate">
+                      {partUrls[part][index]?.replace(".gltf", "") || "N/A"}
+                    </span>
                     <button onClick={() => switchPart(part, 1)}>
                       <img
                         className="h-5"

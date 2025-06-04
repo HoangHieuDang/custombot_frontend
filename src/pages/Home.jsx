@@ -1,23 +1,98 @@
 const Home = () => {
   return (
     <>
-      <section className="relative h-screen w-full flex items-center justify-center bg-black">
+      <section className="relative h-screen w-full flex items-center justify-center #222222">
         <img
-          className="absolute w-full left-auto right-auto z-10 pointer-events-none"
+          className="absolute w-full left-auto right-auto z-10 pointer-events-none brightness-100"
           src="./src/assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />
-
-        <p className="z-0 text-9xl text-amber-200 font-extralight top-50 animate-marquee">
-          Custom your own robot
-        </p>
+        <div className="marquee-wrapper h-1/1 w-1/1 flex flex-row items-center justify-evenly">
+          <p className="z-0 text-9xl text-amber-200 font-extralight  marquee-content-right">
+            Custom your own robot
+          </p>
+          <p className="z-0 text-6xl text-amber-200 font-extralight  marquee-content-left">
+            Custom your own robot
+          </p>
+          <p className="z-0 text-8xl text-amber-200 font-extralight  marquee-content-right">
+            Custom your own robot
+          </p>
+        </div>
       </section>
-      <section>
-        <h2>What is Custom Bot?</h2>
-        <p>
-          Custom Bot is basically a mecha model kit offered by us but we let you
-          decide to choose the robot parts and customize your own version
-        </p>
+      <section className="relative h-screen w-full flex flex-col items-center justify-center #222222">
+        <div className="intro p-6 max-w-4xl mx-auto items-center justify-center">
+          <h2 className="text-4xl font-extralight text-amber-200 text-center mb-15">
+            Build Your Dream Mecha Model Kit
+          </h2>
+          <p className="font-extralight text-xl text-amber-100">
+            Craft your perfect mecha from premium, interchangeable parts
+            designed by our team. Assemble your unique build online, then order
+            it as a real-world model kit — built to your specs and shipped to
+            your door.
+          </p>
+        </div>
+
+        <div className="quick-start-guide p-6 max-w-5xl mx-auto">
+          <h2 className="text-4xl font-extralight text-amber-200 text-center mb-15">
+            How It Works
+          </h2>
+          <ul className="flex items-start justify-center flex-row list-inside space-y-2 text-left text-base leading-relaxed font-extralight text-amber-100">
+            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5 wrap-break-word ">
+              <div className="mt-auto mb-auto">
+                <img
+                  className="w-1/4 ml-auto mr-auto mb-10 mt-5"
+                  src="./src/assets/images/customize.png"
+                  alt="customize-icon"
+                ></img>
+                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                  <strong>Pick Your Parts</strong>
+                </h3>
+                <br />
+                <p className="text-white">
+                  Choose from a curated selection of mecha components — head,
+                  arms, legs, chest, and more. Each part is original and
+                  designed for seamless compatibility. Mix and match to create
+                  your own combination.
+                </p>
+              </div>
+            </li>
+            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5 wrap-break-word ">
+              <div className="mt-auto mb-auto">
+                <img
+                  className="w-1/4 ml-auto mr-auto mb-10 mt-5"
+                  src="./src/assets/images/order.png"
+                  alt="customize-icon"
+                ></img>
+                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                  <strong>Save or Order</strong>
+                </h3>
+                <br />
+                <p className="text-white">
+                  Save your creation or place an order. We'll package your
+                  custom kit with precision-cut parts, ready for you to build at
+                  home.
+                </p>
+              </div>
+            </li>
+            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5  wrap-break-word ">
+              <div className="mt-auto mb-auto">
+                <img
+                  className="w-1/4 ml-auto mr-auto mb-10 mt-5"
+                  src="./src/assets/images/assemble.png"
+                  alt="customize-icon"
+                ></img>
+                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                  <strong>Assemble & Display</strong>
+                </h3>
+                <br />
+                <p className="text-white">
+                  Enjoy the build process and bring your vision to life. Your
+                  mecha is more than a model — it’s a statement piece.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </section>
     </>
   );

@@ -1,16 +1,70 @@
 @import "tailwindcss";
 @tailwind utilities;
 
-
-html{
-    width: 100vw;
-    height: 100vh;
-    background-color: #1f1f1f;
-    color: white;
+html {
+  width: 100vw;
+  height: 100vh;
+  background-color: #222222;
+  color: white;
 }
 
-#root{
-    width: 100vw;
-    height: 100vh;
+#root {
+  width: 100vw;
+  height: 100vh;
 }
-    
+
+@theme {
+  --animate-fade-in-scale: fade-in-scale 0.8s ease-out;
+  @keyframes fade-in-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  --animate-marquee-right: marquee-right 10s linear infinite;
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(100%);
+    }
+  }
+
+  --animate-marquee-left: marquee-left 10s linear infinite;
+  @keyframes marquee-left {
+    0% {
+      transform: translateX(100%);
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(-100%);
+    }
+  }
+}
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+}
+
+.marquee-content-right {
+  display: inline-block;
+  max-width: 100%;
+  animation: marquee-right 15s linear infinite;
+}
+
+.marquee-content-left {
+    display: inline-block;
+    max-width: 100%;
+    animation: marquee-left 15s linear infinite;
+  }

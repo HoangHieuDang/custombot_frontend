@@ -40,7 +40,6 @@ export default class Parts {
 
   async getPart({ id, name, part_type, price } = {}) {
     const params = new URLSearchParams();
-
     if (id !== undefined) params.append("id", id);
     if (name) params.append("name", name);
     if (part_type) params.append("part_type", part_type);
