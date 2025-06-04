@@ -12,10 +12,13 @@ const Home = () => {
             Custom your own robot
           </p>
           <p className="z-0 text-6xl text-amber-200 font-extralight  marquee-content-left">
-            Custom your own robot
+            Combine the parts yourself
+          </p>
+          <p className="z-0 text-4xl text-amber-200 font-extralight  marquee-content-right">
+            Make your dream robot come true
           </p>
           <p className="z-0 text-8xl text-amber-200 font-extralight  marquee-content-right">
-            Custom your own robot
+            It is never too late to have fun
           </p>
         </div>
       </section>
@@ -92,6 +95,9 @@ const Home = () => {
               </div>
             </li>
           </ul>
+          <div className="flex justify-center">
+          <button className="font-extralight bg-gray-800 border-1 rounded-2xl p-2 mt-10 w-1/5"><strong className="text-amber-200">LET'S BUILD!</strong></button>
+          </div>
         </div>
       </section>
     </>

@@ -144,7 +144,7 @@ const CustomBotPanel = () => {
   return (
     /* Form to enter name for custombot */
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Create your Custom Bot</h1>
+      <h1 className="text-4xl font-extralight p-3">Create your Custom Bot</h1>
 
       <form
         onSubmit={(e) => {
