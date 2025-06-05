@@ -4,8 +4,29 @@ import { OrbitControls } from "@react-three/drei";
 import { useEffect, Fragment } from "react";
 import { DynamicPart } from "./DynamicPart"; // Updated DynamicPart with lazy loading and error handling
 import Parts from "../api/partsApi";
+import Bots from "../api/customBotsApi";
 
-const CustomBotPanel = () => {
+const CustomBotPanel = ({ botId }) => {
+  const possibleParts = [
+    "skeleton",
+    "head",
+    "arm",
+    "upper_arm",
+    "lower_arm",
+    "hand",
+    "shoulder",
+    "chest",
+    "upper_waist",
+    "lower_waist",
+    "side_skirt",
+    "front_skirt",
+    "back_skirt",
+    "upper_leg",
+    "lower_leg",
+    "knee",
+    "foot",
+    "backpack",
+  ];
   const basePath = "./src/assets/3d_assets/";
   const partUrlsInit = {
     skeleton: [],
@@ -46,33 +67,79 @@ const CustomBotPanel = () => {
   };
   */
 
-  // Fetch parts from API
+  // Fetch parts from API (fetch all in the database)
+
+  // useEffect(() => {
+  //   const fetchParts = async () => {
+  //     try {
+  //       const partApi = new Parts();
+  //       const partslistObj = {};
+
+  //       for (const [partName] of Object.entries(partUrls)) {
+  //         const parts = await partApi.getPart({ part_type: partName });
+
+  //         if (Array.isArray(parts)) {
+  //           console.log(`${partName}:`, parts);
+  //           partslistObj[partName] = parts
+  //             .map((part) => part.model_path)
+  //             .filter(Boolean); // remove undefined/null
+  //         }
+  //       }
+
+  //       console.log("Fetched all parts:", partslistObj);
+  //       setPartUrls((prev) => ({ ...prev, ...partslistObj }));
+  //     } catch (error) {
+  //       console.warn("Fetch 3D models failed:", error);
+  //     }
+  //   };
+
+  //   fetchParts();
+  // }, []);
+
+  // Fetch parts from customBot using botId
   useEffect(() => {
-    const fetchParts = async () => {
+    const fetchBotParts = async () => {
       try {
-        const partApi = new Parts();
-        const partslistObj = {};
+        const newBot = new Bots();
+        const parts = await newBot.getPartsFromCustomBot(botId);
+        const botPartsObj = {};
+        if (Array.isArray(parts)) {
+          parts.forEach((part) => {
+            if (possibleParts.includes(part.type)) {
+              if (
+                !part.model_path.endsWith(".gltf") &&
+                !part.model_path.endsWith(".glb")
+              ) {
+                console.warn("Invalid model path:", part.model_path);
+              }
 
-        for (const [partName] of Object.entries(partUrls)) {
-          const parts = await partApi.getPart({ part_type: partName });
-
-          if (Array.isArray(parts)) {
-            console.log(`${partName}:`, parts);
-            partslistObj[partName] = parts
-              .map((part) => part.model_path)
-              .filter(Boolean); // remove undefined/null
-          }
+              // Wrap path in an array
+              botPartsObj[part.type] = [part.model_path];
+            } else {
+              console.warn(
+                `part type ${part.type} is not a possible body part type`
+              );
+            }
+          });
+          console.log("botPartsObj: ", botPartsObj);
+          botPartsObj
+            ? setPartUrls((prev) => ({ ...prev, ...botPartsObj }))
+            : console.warn(
+                `can not fetch 3d parts for botId ${botId} botPartsObj empty`
+              );
+          console.log("partUrls: ", partUrls);
+        } else {
+          console.warn(
+            `can not fetch 3d url from botId ${botId}, the received data is empty or null or undefined`
+          );
         }
-
-        console.log("Fetched all parts:", partslistObj);
-        setPartUrls((prev) => ({ ...prev, ...partslistObj }));
-      } catch (error) {
-        console.warn("Fetch 3D models failed:", error);
+      } catch (err) {
+        console.warn(`error while fetching parts for botId ${botId}: ${err}`);
       }
     };
 
-    fetchParts();
-  }, []);
+    fetchBotParts();
+  }, [botId]);
 
   const symmetricalParts = [
     "shoulder",
@@ -96,7 +163,7 @@ const CustomBotPanel = () => {
   arm: [0, 0],              // symmetrical
   leg: [1, 1],              // symmetrical
   backpack: 2,              // asymmetrical
-  chest: 0,
+  chest: 0,                 
   skeleton: 0              // static
   }*/
 
@@ -145,7 +212,7 @@ const CustomBotPanel = () => {
     /* Form to enter name for custombot */
     <div className="p-6">
       <h1 className="text-4xl font-extralight p-3">Create your Custom Bot</h1>
-
+      <p>Selected Bot: {botId}</p>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -163,8 +230,12 @@ const CustomBotPanel = () => {
       </form>
 
       <div className="flex flex-row bg-amber-600">
-        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">Save current bot</button>
-        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">Order</button>
+        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">
+          Save current bot
+        </button>
+        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">
+          Order
+        </button>
       </div>
 
       {/* 3D Canvas */}
@@ -259,7 +330,7 @@ const CustomBotPanel = () => {
                       />
                     </button>
                     <span className="flex-1 text-center text-xs text-white truncate">
-                      {partUrls[part][index[0]]?.replace(".gltf","") || "N/A"}
+                      {partUrls[part][index[0]]?.replace(".gltf", "") || "N/A"}
                     </span>
                     <button onClick={() => switchPart(part, 1, "left")}>
                       <img
@@ -278,7 +349,7 @@ const CustomBotPanel = () => {
                       />
                     </button>
                     <span className="flex-1 text-center text-xs text-white truncate">
-                      {partUrls[part][index[1]]?.replace(".gltf","") || "N/A"}
+                      {partUrls[part][index[1]]?.replace(".gltf", "") || "N/A"}
                     </span>
                     <button onClick={() => switchPart(part, 1, "right")}>
                       <img

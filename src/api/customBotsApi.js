@@ -99,6 +99,18 @@ export default class Bots {
   }
 
   async getPartsFromCustomBot(bot_id) {
+    //   {
+    //     "custom_robot_id": row.custom_robot_id,
+    //     "user_id": row.user_id,
+    //     "custom_bot_name": row.custom_bot_name,
+    //     "robot_part_id": row.robot_part_id,
+    //     "robot_part_name": row.robot_part_name,
+    //     "type": row.type,
+    //     "price": row.price,
+    //     "amount": row.robot_part_amount,
+    //     "model_path": row.model_path,
+    //     "img_path": row.img_path
+    // }
     if (!bot_id) {
       console.error("bot_id is required");
       return;
