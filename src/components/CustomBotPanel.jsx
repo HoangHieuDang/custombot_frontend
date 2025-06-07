@@ -7,6 +7,7 @@ import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 
 const CustomBotPanel = ({ botId }) => {
+  let botName = "";
   const possibleParts = [
     "skeleton",
     "head",
@@ -47,6 +48,7 @@ const CustomBotPanel = ({ botId }) => {
   };
 
   const [partUrls, setPartUrls] = useState(partUrlsInit);
+  const [usedPartIds, setUsedPartIds] = useState([]);
   /* hardcoded example for partUrls
   const partUrls = {
     skeleton: ["custombot_skeleton.gltf"],
@@ -66,80 +68,62 @@ const CustomBotPanel = ({ botId }) => {
     foot: ["cb_foot_1.gltf", "cb_foot_2.gltf"],
   };
   */
-
-  // Fetch parts from API (fetch all in the database)
-
-  // useEffect(() => {
-  //   const fetchParts = async () => {
-  //     try {
-  //       const partApi = new Parts();
-  //       const partslistObj = {};
-
-  //       for (const [partName] of Object.entries(partUrls)) {
-  //         const parts = await partApi.getPart({ part_type: partName });
-
-  //         if (Array.isArray(parts)) {
-  //           console.log(`${partName}:`, parts);
-  //           partslistObj[partName] = parts
-  //             .map((part) => part.model_path)
-  //             .filter(Boolean); // remove undefined/null
-  //         }
-  //       }
-
-  //       console.log("Fetched all parts:", partslistObj);
-  //       setPartUrls((prev) => ({ ...prev, ...partslistObj }));
-  //     } catch (error) {
-  //       console.warn("Fetch 3D models failed:", error);
-  //     }
-  //   };
-
-  //   fetchParts();
-  // }, []);
-
   // Fetch parts from customBot using botId
   useEffect(() => {
     const fetchBotParts = async () => {
-      try {
-        const newBot = new Bots();
-        const parts = await newBot.getPartsFromCustomBot(botId);
-        const botPartsObj = {};
-        if (Array.isArray(parts)) {
-          parts.forEach((part) => {
-            if (possibleParts.includes(part.type)) {
-              if (
-                !part.model_path.endsWith(".gltf") &&
-                !part.model_path.endsWith(".glb")
-              ) {
-                console.warn("Invalid model path:", part.model_path);
-              }
+      const botApi = new Bots();
+      const botParts = await botApi.getPartsFromCustomBot(botId); // your function
+      console.log(`parts of bot of botId ${botId}: `, botParts);
 
-              // Wrap path in an array
-              botPartsObj[part.type] = [part.model_path];
-            } else {
-              console.warn(
-                `part type ${part.type} is not a possible body part type`
-              );
-            }
-          });
-          console.log("botPartsObj: ", botPartsObj);
-          botPartsObj
-            ? setPartUrls((prev) => ({ ...prev, ...botPartsObj }))
-            : console.warn(
-                `can not fetch 3d parts for botId ${botId} botPartsObj empty`
-              );
-          console.log("partUrls: ", partUrls);
-        } else {
-          console.warn(
-            `can not fetch 3d url from botId ${botId}, the received data is empty or null or undefined`
-          );
-        }
-      } catch (err) {
-        console.warn(`error while fetching parts for botId ${botId}: ${err}`);
-      }
+      const formattedPartUrls = {};
+      const usedIds = [];
+
+      botParts.forEach((part) => {
+        formattedPartUrls[part.type] = [part.model_path];
+        usedIds.push(part.robot_part_id);
+      });
+
+      console.log("formattedPartUrls: ", formattedPartUrls)
+      console.log("partUrls:", partUrls)
+      console.log("usedIds: ", usedIds)
+
+      setPartUrls(formattedPartUrls);
+      setUsedPartIds(usedIds); // <- will trigger useEffect 2
     };
 
-    fetchBotParts();
+    if (botId) fetchBotParts();
   }, [botId]);
+
+  // Fetch parts from database for further customization
+  useEffect(() => {
+    const fetchAvailableParts = async () => {
+      const partsApi = new Parts();
+      for (const type of possibleParts) {
+        try {
+          const available = await partsApi.getPart({
+            part_type: type,
+            page: 1,
+            page_size: 10,
+            exclude_ids: usedPartIds,
+          });
+  
+          if (available?.results?.length > 0) {
+            setPartUrls((prev) => ({
+              ...prev,
+              [type]: [
+                ...(prev[type] || []),
+                ...available.results.map((p) => p.model_path),
+              ],
+            }));
+          }
+        } catch (err) {
+          console.warn(`Failed to fetch parts for ${type}:`, err);
+        }
+      }
+    };
+  
+    if (usedPartIds.length > 0) fetchAvailableParts();
+  }, [usedPartIds]);
 
   const symmetricalParts = [
     "shoulder",
@@ -330,7 +314,7 @@ const CustomBotPanel = ({ botId }) => {
                       />
                     </button>
                     <span className="flex-1 text-center text-xs text-white truncate">
-                      {partUrls[part][index[0]]?.replace(".gltf", "") || "N/A"}
+                      {partUrls[part]&&partUrls[part][index[0]]?.replace(".gltf", "") || "N/A"}
                     </span>
                     <button onClick={() => switchPart(part, 1, "left")}>
                       <img
@@ -349,7 +333,7 @@ const CustomBotPanel = ({ botId }) => {
                       />
                     </button>
                     <span className="flex-1 text-center text-xs text-white truncate">
-                      {partUrls[part][index[1]]?.replace(".gltf", "") || "N/A"}
+                      {partUrls[part]&&partUrls[part][index[1]]?.replace(".gltf", "") || "N/A"}
                     </span>
                     <button onClick={() => switchPart(part, 1, "right")}>
                       <img
@@ -376,7 +360,7 @@ const CustomBotPanel = ({ botId }) => {
                       />
                     </button>
                     <span className="flex-1 text-center text-xs text-white truncate">
-                      {partUrls[part][index]?.replace(".gltf", "") || "N/A"}
+                      {partUrls[part]&&partUrls[part][index]?.replace(".gltf", "") || "N/A"}
                     </span>
                     <button onClick={() => switchPart(part, 1)}>
                       <img

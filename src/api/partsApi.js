@@ -38,12 +38,25 @@ export default class Parts {
 
   //Read
 
-  async getPart({ id, name, part_type, price } = {}) {
+  async getPart({
+    id,
+    name,
+    part_type,
+    price,
+    page = 1,
+    page_size = 10,
+    exclude_ids = [],
+  } = {}) {
     const params = new URLSearchParams();
+
     if (id !== undefined) params.append("id", id);
     if (name) params.append("name", name);
     if (part_type) params.append("part_type", part_type);
     if (price !== undefined) params.append("price", price);
+    if (page !== undefined) params.append("page", page);
+    if (page_size !== undefined) params.append("page_size", page_size);
+    if (exclude_ids.length > 0)
+      params.append("exclude_ids", exclude_ids.join(","));
 
     const url = `${BASE_URL}/parts/?${params.toString()}`;
 
@@ -55,7 +68,7 @@ export default class Parts {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Retrieved parts:", data);
+        console.log("Retrieved paginated parts:", data);
         return data;
       } else {
         console.error("Failed to retrieve parts:", data.error);

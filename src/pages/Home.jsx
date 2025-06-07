@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 const Home = () => {
   return (
     <>
@@ -8,16 +9,16 @@ const Home = () => {
           alt="a banner picture of custom bots"
         />
         <div className="marquee-wrapper h-1/1 w-1/1 flex flex-row items-center justify-evenly">
-          <p className="z-0 text-9xl text-amber-200 font-extralight  marquee-content-right">
+          <p className="z-0 text-9xl text-amber-100 font-extralight  marquee-content-right">
             Custom your own robot
           </p>
-          <p className="z-0 text-6xl text-amber-200 font-extralight  marquee-content-left">
+          <p className="z-0 text-6xl text-amber-50 font-extralight  marquee-content-left">
             Combine the parts yourself
           </p>
           <p className="z-0 text-4xl text-amber-200 font-extralight  marquee-content-right">
             Make your dream robot come true
           </p>
-          <p className="z-0 text-8xl text-amber-200 font-extralight  marquee-content-right">
+          <p className="z-0 text-8xl text-amber-50 font-extralight  marquee-content-right">
             It is never too late to have fun
           </p>
         </div>
@@ -96,7 +97,11 @@ const Home = () => {
             </li>
           </ul>
           <div className="flex justify-center">
-          <button className="font-extralight bg-gray-800 border-1 rounded-2xl p-2 mt-10 w-1/5"><strong className="text-amber-200">LET'S BUILD!</strong></button>
+            <button className="font-extralight bg-gray-800 border-1 rounded-2xl p-2 mt-10 w-1/5">
+              <NavLink to="/custombot">
+                <strong className="text-amber-200">LET'S BUILD!</strong>
+              </NavLink>
+            </button>
           </div>
         </div>
       </section>
