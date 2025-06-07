@@ -35,10 +35,10 @@ export default class Bots {
     }
   }
 
-  async addPartToBot({ part_id, custom_robot_id, amount }) {
-    if (!part_id || !custom_robot_id || !amount) {
+  async addPartToBot({ part_id, custom_robot_id, amount, direction }) {
+    if (!part_id || !custom_robot_id || !amount || !direction) {
       console.error(
-        "Missing required fields: part_id, custom_robot_id, or amount"
+        "Missing required fields: part_id, custom_robot_id, amount, or direction"
       );
       return;
     }
@@ -49,14 +49,14 @@ export default class Bots {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ part_id, custom_robot_id, amount }),
+        body: JSON.stringify({ part_id, custom_robot_id, amount, direction }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         console.log(
-          `Added ${amount} of part ${part_id} to bot ${custom_robot_id}:`,
+          `Added ${amount} of part ${part_id} (${direction}) to bot ${custom_robot_id}:`,
           data.message
         );
         return data;
@@ -69,6 +69,7 @@ export default class Bots {
       return null;
     }
   }
+
   //Read
   async getCustomBot({ id, user_id, name, status, created_at } = {}) {
     const params = new URLSearchParams();
@@ -99,29 +100,33 @@ export default class Bots {
   }
 
   async getPartsFromCustomBot(bot_id) {
-    //   {
-    //     "custom_robot_id": row.custom_robot_id,
-    //     "user_id": row.user_id,
-    //     "custom_bot_name": row.custom_bot_name,
-    //     "robot_part_id": row.robot_part_id,
-    //     "robot_part_name": row.robot_part_name,
-    //     "type": row.type,
-    //     "price": row.price,
-    //     "amount": row.robot_part_amount,
-    //     "model_path": row.model_path,
-    //     "img_path": row.img_path
+    // Expected structure per part:
+    // {
+    //   "custom_robot_id": ...,
+    //   "user_id": ...,
+    //   "custom_bot_name": ...,
+    //   "direction": "left" | "right" | "center",
+    //   "robot_part_id": ...,
+    //   "robot_part_name": ...,
+    //   "type": ...,
+    //   "price": ...,
+    //   "amount": ...,
+    //   "model_path": ...,
+    //   "img_path": ...
     // }
+
     if (!bot_id) {
       console.error("bot_id is required");
       return;
     }
+
     try {
       const response = await fetch(`${BASE_URL}/custom_bots/${bot_id}/parts`);
       const data = await response.json();
 
       if (response.ok) {
         console.log(`Parts from bot ${bot_id} fetched successfully:`, data);
-        return data;
+        return data; // contains array of parts with direction
       } else {
         console.error(`Error fetching parts from bot ${bot_id}:`, data.error);
         return null;
@@ -131,6 +136,7 @@ export default class Bots {
       return null;
     }
   }
+
   //Update
   async updateCustomBot(bot_id, { name } = {}) {
     if (!bot_id) {
@@ -171,26 +177,29 @@ export default class Bots {
   }
 
   //Delete
-  async deletePartFromCustomBot(bot_id, part_id) {
-    if (!bot_id || !part_id) {
-      console.error("bot_id and part_id are required");
-      return;
+  async deletePartFromCustomBot(bot_id, part_id, direction) {
+    if (!bot_id || !part_id || !direction) {
+      console.error("bot_id, part_id, and direction are required");
+      return false;
     }
+
     try {
       const response = await fetch(
-        `${BASE_URL}/custom_bots/${bot_id}/${part_id}`,
+        `${BASE_URL}/custom_bots/${bot_id}/${part_id}?direction=${direction}`,
         {
           method: "DELETE",
         }
       );
 
       if (response.status === 204) {
-        console.log(`Part ${part_id} deleted from Custom Bot ${bot_id}`);
+        console.log(
+          `Part ${part_id} (${direction}) deleted from Custom Bot ${bot_id}`
+        );
         return true;
       } else {
         const data = await response.json();
         console.error(
-          `Failed to delete part ${part_id} from Custom Bot ${bot_id}:`,
+          `Failed to delete part ${part_id} (${direction}) from Custom Bot ${bot_id}:`,
           data.error
         );
         return false;
