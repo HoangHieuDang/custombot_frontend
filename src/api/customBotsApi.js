@@ -176,6 +176,49 @@ export default class Bots {
     }
   }
 
+  async updatePartOnCustomBot({ bot_id, part_id, direction, amount = 1 }) {
+    if (!bot_id || !part_id || !direction) {
+      console.error("Missing required fields: bot_id, part_id, or direction");
+      return null;
+    }
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/custom_bots/${bot_id}/update_part`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            part_id,
+            direction,
+            amount,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(
+          `Updated part ${part_id} (${direction}) for bot ${bot_id}:`,
+          data.message
+        );
+        return data;
+      } else {
+        console.error(
+          `Failed to update part ${part_id} (${direction}) for bot ${bot_id}:`,
+          data.error
+        );
+        return null;
+      }
+    } catch (error) {
+      console.error("Network error while updating part on custom bot:", error);
+      return null;
+    }
+  }
+
   //Delete
   async deletePartFromCustomBot(bot_id, part_id, direction) {
     if (!bot_id || !part_id || !direction) {
