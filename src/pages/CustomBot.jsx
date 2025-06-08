@@ -22,7 +22,7 @@ const CustomBot = () => {
   useEffect(() => {
     const fetchParts = async () => {
       const apiBots = new Bots();
-      const bots = await apiBots.getCustomBot({user_id:2});
+      const bots = await apiBots.getCustomBot({user_id:1});
       if (bots){
         setCustomBots(bots)
       }

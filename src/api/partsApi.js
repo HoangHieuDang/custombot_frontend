@@ -48,13 +48,12 @@ export default class Parts {
     exclude_ids = [],
   } = {}) {
     const params = new URLSearchParams();
-
     if (id !== undefined) params.append("id", id);
     if (name) params.append("name", name);
     if (part_type) params.append("part_type", part_type);
     if (price !== undefined) params.append("price", price);
-    if (page !== undefined) params.append("page", page);
-    if (page_size !== undefined) params.append("page_size", page_size);
+    if (page) params.append("page", page);
+    if (page_size) params.append("page_size", page_size);
     if (exclude_ids.length > 0)
       params.append("exclude_ids", exclude_ids.join(","));
 
