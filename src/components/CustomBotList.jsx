@@ -36,7 +36,7 @@ const CustomBotList = ({ customBots }) => {
                     {bot.status}
                   </strong>
                 </p>
-                {bot.status === "in progress" ? (
+                {bot.status === "in_progress" ? (
                   <img
                     className="w-6 h-6 justify-self-end mr-2 mt-auto mb-auto"
                     src="./src/assets/images/trolley.png"

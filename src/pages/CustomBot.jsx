@@ -4,14 +4,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Bots from "../api/customBotsApi";
 
-const CustomBot = () => {
-  //Hardcoded customBots for testing
-  const customBotsHardCoded = [
-    { name: "oberlisk", status: "in progress", id: 1 },
-    { name: "zilius", status: "ordered", id: 2 },
-  ];
+const CustomBot = ({userId}) => {
+
   //create useState UserID to know which user is currently chosen
-  const [userId, setUserId] = useState(null);
+  //const [userId, setUserId] = useState(null);
   const [customBots, setCustomBots] = useState([]);
   {
     /* customBots is a list of custombots objects
@@ -22,7 +18,7 @@ const CustomBot = () => {
   useEffect(() => {
     const fetchParts = async () => {
       const apiBots = new Bots();
-      const bots = await apiBots.getCustomBot({user_id:1});
+      const bots = await apiBots.getCustomBot({user_id:userId});
       if (bots){
         setCustomBots(bots)
       }

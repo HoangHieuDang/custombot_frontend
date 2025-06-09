@@ -11,11 +11,10 @@ export default function Header() {
     <header>
       <nav className="inline-flex flex-row w-full bg-slate-800">
         <img
-          src="/src/assets/images/Custombot.png"
-          className="ml-5 h-10 w-auto justify-self mt-auto mb-auto"
-          alt="this is custombot logo"
+          src="/src/assets/images/PLAplay_logo.png"
+          className="ml-5 h-9 w-auto justify-self mt-auto mb-auto"
+          alt="this is PLAplay logo"
         />
-
         <ul className="flex h-16 items-center justify-between">
           <li className={liClassName}>
             <NavLink
@@ -44,10 +43,16 @@ export default function Header() {
               Profile
             </NavLink>
           </li>
+          <li className={liClassName}>
+            <NavLink
+              to="/order"
+              className={({ isActive }) => liCssStyling(isActive)}
+              end
+            >
+              Order
+            </NavLink>
+          </li>
         </ul>
-
-        
-        
       </nav>
     </header>
   );

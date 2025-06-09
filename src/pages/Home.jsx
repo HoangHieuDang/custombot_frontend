@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <section className="relative h-screen w-full flex items-center justify-center #222222">
+      <section className="relative h-full w-full flex items-center justify-center #222222">
         <img
-          className="absolute w-full left-auto right-auto z-10 pointer-events-none brightness-100"
+          className="absolute w-auto h-9/10 left-auto right-auto z-10 pointer-events-none brightness-100"
           src="./src/assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />
@@ -23,9 +23,10 @@ const Home = () => {
           </p>
         </div>
       </section>
-      <section className="relative h-screen w-full flex flex-col items-center justify-center #222222">
+
+      <section className="relative h-full w-full flex flex-col items-center justify-center #222222">
         <div className="intro p-6 max-w-4xl mx-auto items-center justify-center">
-          <h2 className="text-4xl font-extralight text-amber-200 text-center mb-15">
+          <h2 className="text-4xl font-extralight text-amber-200 text-center pt-30 mb-15">
             Build Your Dream Mecha Model Kit
           </h2>
           <p className="font-extralight text-xl text-amber-100">

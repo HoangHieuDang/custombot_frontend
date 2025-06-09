@@ -6,6 +6,7 @@ import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 
 const CustomBotPanel = ({ botId }) => {
+  // List of all possible robot part types
   const possibleParts = [
     "skeleton",
     "head",
@@ -28,9 +29,27 @@ const CustomBotPanel = ({ botId }) => {
   ];
 
   const basePath = "./src/assets/3d_assets/";
+
+  // partUrls stores a list of available models for each part type
+  // Example:
+  // partUrls = {
+  //   head: [{ modelUrl: 'cb_head_1.gltf', partId: 5 }, { modelUrl: 'cb_head_2.gltf', partId: 8 }],
+  //   chest: [{ modelUrl: 'cb_chest_1.gltf', partId: 6 }]
+  // }
   const [partUrls, setPartUrls] = useState({});
+
+  // currentParts stores the selected part for this bot, including left/right if asymmetric
+  // Example:
+  // currentParts = {
+  //   head: { index: 0, direction: 'center', partId: 2, modelUrl: 'cb_head_1.gltf' },
+  //   upper_arm: [
+  //     { index: 1, direction: 'left', partId: 1, modelUrl: 'cb_arm_left.gltf' },
+  //     { index: 2, direction: 'right', partId: 3, modelUrl: 'cb_arm_right.gltf' }
+  //   ]
+  // }
   const [currentParts, setCurrentParts] = useState({});
 
+  // First useEffect: Fetch parts for the current custom bot by ID
   useEffect(() => {
     const fetchCurrentBot = async () => {
       const botApi = new Bots();
@@ -43,6 +62,7 @@ const CustomBotPanel = ({ botId }) => {
       for (const part of botParts) {
         const { type, direction, model_path, robot_part_id } = part;
 
+        // Store symmetrical or asymmetrical current part
         if (["left", "right"].includes(direction)) {
           if (!currentPartsObj[type]) currentPartsObj[type] = [];
           currentPartsObj[type].push({
@@ -60,6 +80,7 @@ const CustomBotPanel = ({ botId }) => {
           };
         }
 
+        // Collect into partUrls for prefetching
         if (!partUrlsObj[type]) partUrlsObj[type] = [];
         const alreadyExists = partUrlsObj[type].some(
           (p) => p.partId === robot_part_id
@@ -79,10 +100,13 @@ const CustomBotPanel = ({ botId }) => {
     if (botId) fetchCurrentBot();
   }, [botId]);
 
+  // Second useEffect: Fetch more parts from database for each part type, excluding already used ones
   useEffect(() => {
     const fetchAllParts = async () => {
       const partsApi = new Parts();
       const newPartUrls = {};
+
+      // Collect part IDs already used
       const usedPartIds = Object.values(currentParts).flatMap((entry) =>
         Array.isArray(entry) ? entry.map((p) => p.partId) : [entry.partId]
       );
@@ -111,6 +135,7 @@ const CustomBotPanel = ({ botId }) => {
         }
       }
 
+      // Merge new parts into partUrls only once
       setPartUrls((prev) => {
         const updated = { ...prev };
         for (const [type, parts] of Object.entries(newPartUrls)) {
@@ -123,6 +148,7 @@ const CustomBotPanel = ({ botId }) => {
     if (Object.keys(currentParts).length > 0) fetchAllParts();
   }, [currentParts]);
 
+  // Function to switch between part options using left/right buttons
   const switchPart = (typeKey, delta, side = null) => {
     const urls = partUrls[typeKey];
     if (!urls?.length) return;
@@ -161,37 +187,16 @@ const CustomBotPanel = ({ botId }) => {
   };
 
   return (
-    /* Form to enter name for custombot */
-    <div className="p-6">
-      <h1 className="text-4xl font-extralight p-3">Create your Custom Bot</h1>
-      <p>Selected Bot: {botId}</p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target);
-          console.log(formData.get("name"));
-        }}
-        className="mb-6"
-      >
-        <input
-          type="text"
-          name="name"
-          placeholder="Bot's Name"
-          className="w-full px-4 py-2 border rounded-md"
-        />
-      </form>
-
-      <div className="flex flex-row bg-gray-800 p-5 gap-4">
-        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">
-          Save current bot
-        </button>
-        <button className="border border-1 rounded-xl p-1 border-amber-100 bg-gray-800 text-white font-extralight">
-          Order
-        </button>
-      </div>
-
+    <>
       {/* 3D Canvas */}
-      <div className="flex gap-6">
+
+      <div className="bg-gray-900 gap-5 flex flex-column text-amber-50 font-extralight m-5 rounded-2xl">
+        <button className="rounded-2xl bg-gray-700 p-3 m-2">
+          Save customization
+        </button>
+        <button className="rounded-2xl bg-gray-700 p-3 m-2">Order this bot</button>
+      </div>
+      <div className="flex gap-6 m-5">
         <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
           <Canvas
             style={{ backgroundColor: "#BE5B50" }}
@@ -290,7 +295,7 @@ const CustomBotPanel = ({ botId }) => {
           })}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
