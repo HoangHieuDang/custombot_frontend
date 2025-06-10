@@ -3,17 +3,23 @@ import CustomBotPanel from "./CustomBotPanel";
 import { useState } from "react";
 
 const CustomBotList = ({ customBots }) => {
-  const [selectedBot, setSelectedBot] = useState(null)
-  
+  const [selectedBot, setSelectedBot] = useState(null);
+
   const getBotById = (botId) => {
-    setSelectedBot(botId)
-    console.log("botId: ", botId)
+    setSelectedBot(botId);
+    console.log("botId: ", botId);
   };
   return (
     <>
       <div className="h-1/1 w-screen">
-        <h1 className="text-4xl font-extralight p-3">Your custombot lists</h1>
-        <div className="h-1/1 w-2/3 ml-auto mr-auto p-2 rounded-3xl bg-gray-700">
+        <h1 className="text-4xl font-extralight p-3 text-center">Custombot lists</h1>
+        <div
+          className={`transition-all duration-300 w-full bg-gray-700 rounded-3xl p-4 overflow-y-auto ${
+            selectedBot
+              ? "max-h-40 ml-5 mr-5 pr-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-700 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:mr-5 [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+              : "max-h-[600px]"
+          }`}
+        >
           {customBots.length === 0 ? (
             <p className="ml-auto mr-auto">no current custombot</p>
           ) : (
@@ -23,7 +29,7 @@ const CustomBotList = ({ customBots }) => {
                 key={`div_bot_list_${bot.name}`}
                 className="bg-gray-600 rounded-2xl m-2 grid grid-cols-3 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
-                <p className="m-2">{`Custombot: ${bot.name}`}</p>
+                <p className="m-2">{`${bot.name}`}</p>
                 <p className="m-2 justify-self-start">
                   status:{" "}
                   <strong
@@ -55,10 +61,8 @@ const CustomBotList = ({ customBots }) => {
             <p>Create new bot</p>
           </button>
         </div>
-        {selectedBot?<CustomBotPanel botId={selectedBot} />:null}
+        {selectedBot ? <CustomBotPanel botId={selectedBot} /> : null}
       </div>
-
-
     </>
   );
 };

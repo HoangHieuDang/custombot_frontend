@@ -189,110 +189,115 @@ const CustomBotPanel = ({ botId }) => {
   return (
     <>
       {/* 3D Canvas */}
-
-      <div className="bg-gray-900 gap-5 flex flex-column text-amber-50 font-extralight m-5 rounded-2xl">
-        <button className="rounded-2xl bg-gray-700 p-3 m-2">
-          Save customization
-        </button>
-        <button className="rounded-2xl bg-gray-700 p-3 m-2">Order this bot</button>
-      </div>
-      <div className="flex gap-6 m-5">
-        <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
-          <Canvas
-            style={{ backgroundColor: "#BE5B50" }}
-            camera={{ position: [0, 0, 15], fov: 100 }}
-          >
-            <ambientLight intensity={5} />
-            <directionalLight position={[1, 2, 5]} intensity={5} />
-            <OrbitControls />
-            <Suspense fallback={null}>
-              {Object.entries(currentParts).map(([type, entry]) => {
-                if (Array.isArray(entry)) {
-                  return entry.map(({ modelUrl, direction }, idx) => (
-                    <DynamicPart
-                      key={`${type}_${direction}_${idx}`}
-                      url={`${basePath}${modelUrl}`}
-                      direction={direction}
-                      rotation={[0, Math.PI / 2, 0]}
-                    />
-                  ));
-                } else {
-                  return (
-                    <DynamicPart
-                      key={`${type}`}
-                      url={`${basePath}${entry.modelUrl}`}
-                      direction={entry.direction}
-                      rotation={[0, Math.PI / 2, 0]}
-                    />
-                  );
-                }
-              })}
-            </Suspense>
-          </Canvas>
+      <div className="bg-gray-900 ml-5 mr-5 mt-5 rounded-t-2xl">
+        <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
+          <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
+            Save customization
+          </button>
+          <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
+            Order this bot
+          </button>
         </div>
+        <div className="flex gap-6 ml-5 mr-5">
+          <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
+            <Canvas
+              style={{ backgroundColor: "#BE5B50" }}
+              camera={{ position: [0, 0, 15], fov: 100 }}
+            >
+              <ambientLight intensity={5} />
+              <directionalLight position={[1, 2, 5]} intensity={5} />
+              <OrbitControls />
+              <Suspense fallback={null}>
+                {Object.entries(currentParts).map(([type, entry]) => {
+                  if (Array.isArray(entry)) {
+                    return entry.map(({ modelUrl, direction }, idx) => (
+                      <DynamicPart
+                        key={`${type}_${direction}_${idx}`}
+                        url={`${basePath}${modelUrl}`}
+                        direction={direction}
+                        rotation={[0, Math.PI / 2, 0]}
+                      />
+                    ));
+                  } else {
+                    return (
+                      <DynamicPart
+                        key={`${type}`}
+                        url={`${basePath}${entry.modelUrl}`}
+                        direction={entry.direction}
+                        rotation={[0, Math.PI / 2, 0]}
+                      />
+                    );
+                  }
+                })}
+              </Suspense>
+            </Canvas>
+          </div>
 
-        {/* Customize Option Panel */}
-        <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white">
-          <h2 className="text-xl font-semibold mb-4">Customize Parts</h2>
-          {Object.entries(currentParts).map(([typeKey, partEntry]) => {
-            if (typeKey === "skeleton") return null;
-            const urls = partUrls[typeKey] || [];
+          {/* Customize Option Panel */}
+          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white">
+            <h2 className="text-xl font-semibold mb-4">Customize Parts</h2>
+            {Object.entries(currentParts).map(([typeKey, partEntry]) => {
+              if (typeKey === "skeleton") return null;
+              const urls = partUrls[typeKey] || [];
 
-            return (
-              <div key={typeKey} className="mb-4">
-                <h3 className="text-lg font-medium mb-1 capitalize">
-                  {typeKey}
-                </h3>
+              return (
+                <div key={typeKey} className="mb-4">
+                  <h3 className="text-lg font-medium mb-1 capitalize">
+                    {typeKey}
+                  </h3>
 
-                {Array.isArray(partEntry) ? (
-                  partEntry.map(({ direction, index, modelUrl }, i) => (
-                    <div
-                      key={`${typeKey}_${direction}`}
-                      className="flex items-center gap-2 text-sm text-gray-300 mb-1"
-                    >
-                      <span className="w-14 capitalize">{direction}:</span>
-                      <button
-                        onClick={() => switchPart(typeKey, -1, direction)}
+                  {Array.isArray(partEntry) ? (
+                    partEntry.map(({ direction, index, modelUrl }, i) => (
+                      <div
+                        key={`${typeKey}_${direction}`}
+                        className="flex items-center gap-2 text-sm text-gray-300 mb-1"
                       >
+                        <span className="w-14 capitalize">{direction}:</span>
+                        <button
+                          onClick={() => switchPart(typeKey, -1, direction)}
+                        >
+                          <img
+                            className="h-5"
+                            src="./src/assets/ui_components/left-arrow.png"
+                          />
+                        </button>
+                        <span className="flex-1 text-center text-xs truncate">
+                          {modelUrl?.replace(".gltf", "") || "N/A"}
+                        </span>
+                        <button
+                          onClick={() => switchPart(typeKey, 1, direction)}
+                        >
+                          <img
+                            className="h-5"
+                            src="./src/assets/ui_components/right-arrow.png"
+                          />
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <span className="w-14">Option:</span>
+                      <button onClick={() => switchPart(typeKey, -1)}>
                         <img
                           className="h-5"
                           src="./src/assets/ui_components/left-arrow.png"
                         />
                       </button>
                       <span className="flex-1 text-center text-xs truncate">
-                        {modelUrl?.replace(".gltf", "") || "N/A"}
+                        {partEntry.modelUrl?.replace(".gltf", "") || "N/A"}
                       </span>
-                      <button onClick={() => switchPart(typeKey, 1, direction)}>
+                      <button onClick={() => switchPart(typeKey, 1)}>
                         <img
                           className="h-5"
                           src="./src/assets/ui_components/right-arrow.png"
                         />
                       </button>
                     </div>
-                  ))
-                ) : (
-                  <div className="flex items-center gap-2 text-sm text-gray-300">
-                    <span className="w-14">Option:</span>
-                    <button onClick={() => switchPart(typeKey, -1)}>
-                      <img
-                        className="h-5"
-                        src="./src/assets/ui_components/left-arrow.png"
-                      />
-                    </button>
-                    <span className="flex-1 text-center text-xs truncate">
-                      {partEntry.modelUrl?.replace(".gltf", "") || "N/A"}
-                    </span>
-                    <button onClick={() => switchPart(typeKey, 1)}>
-                      <img
-                        className="h-5"
-                        src="./src/assets/ui_components/right-arrow.png"
-                      />
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </>
