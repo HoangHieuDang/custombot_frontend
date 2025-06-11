@@ -231,7 +231,7 @@ const CustomBotPanel = ({ selectedBot }) => {
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
               className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600"
-              onClick={saveCustomBot()}
+              onClick={()=>saveCustomBot()}
             >
               Save customization
             </button>

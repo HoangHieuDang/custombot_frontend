@@ -3,7 +3,8 @@ import CustomBotPanel from "./CustomBotPanel";
 import { useState } from "react";
 import Bots from "../api/customBotsApi";
 
-const CustomBotList = ({ userId, customBots }) => {
+const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
+  //customBots is an [{...},{...},{...},...]
   const [selectedBot, setSelectedBot] = useState(null);
 
   const handleChosenBot = (bot) => {
@@ -16,39 +17,35 @@ const CustomBotList = ({ userId, customBots }) => {
     const botApi = new Bots();
     const baseName = "new_custom_bot";
     let newBotName = baseName;
-    const botNameList = [];
-
-    // Collect existing bot names
-    if (customBots) {
-      for (const [customBotName] of Object.entries(customBots)) {
-        botNameList.push(customBotName);
-      }
-    }
-    console.log("botNameList:",botNameList)
-    // Find a unique name by appending index
+    const botNameList = customBots.map((bot) => bot.name); // Extract names
+  
+    // Generate a unique name
     let namingIndex = 1;
     while (botNameList.includes(newBotName)) {
       newBotName = `${baseName}${namingIndex}`;
       namingIndex++;
     }
-
+  
     try {
-      // Use the updated API wrapper method
-      const { success, message } = await botApi.createCustomBot({
+      // Send request to create the bot
+      const result = await botApi.createCustomBot({
         user_id: userId,
         name: newBotName,
       });
-
-      if (success) {
-        console.log(`Bot created: ${message}`);
-        // Optionally refresh bot list here if needed
+  
+      // Handle structured response tuple of 2 elements (success(boolean), message(string))
+      if (result?.success) {
+        console.log(`Bot created: ${result.message}`);
+        //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
+        refetchCustomBots()
       } else {
-        console.warn(`Failed to create bot: ${message}`);
+        console.warn(`Failed to create bot: ${result?.message || "Unknown error"}`);
       }
     } catch (err) {
       console.error("Unexpected error while creating bot:", err);
     }
   };
+  
 
   return (
     <>
@@ -97,7 +94,7 @@ const CustomBotList = ({ userId, customBots }) => {
           )}
           <button
             className="ml-auto mr-auto flex flex-row gap-2 cursor-pointer p-3 rounded-2xl hover:bg-gray-600 hover:text-amber-500 hover:font-bold"
-            onClick={()=>createNewBot()}
+            onClick={() => createNewBot()}
           >
             <img
               className="w-6 h-6"
