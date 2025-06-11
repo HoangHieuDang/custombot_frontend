@@ -27,7 +27,7 @@ const CustomBot = ({userId}) => {
   }, []);
   return (
     <>
-      <CustomBotList customBots={customBots} />
+      <CustomBotList userId = {userId} customBots={customBots} />
     </>
   );
 };

@@ -1,18 +1,51 @@
 import React from "react";
 import CustomBotPanel from "./CustomBotPanel";
 import { useState } from "react";
+import Bots from "../api/customBotsApi";
 
-const CustomBotList = ({ customBots }) => {
+const CustomBotList = ({ userId, customBots }) => {
   const [selectedBot, setSelectedBot] = useState(null);
 
-  const getBotById = (botId) => {
-    setSelectedBot(botId);
-    console.log("botId: ", botId);
+  const handleChosenBot = (bot) => {
+    setSelectedBot(bot);
+    return bot;
   };
+  
+  //Handling Create new Bot
+  const createNewBot = async () => {
+    /*
+    const botApi = new Bots();
+    const baseName = "new_custom_bot";
+    let newBotName = baseName;
+    const botNameList = [];
+  
+    // Build name list from existing customBots
+    if (customBots) {
+      for (const [customBotName] of Object.entries(customBots)) {
+        botNameList.push(customBotName);
+      }
+    }
+  
+    // Try to find a unique name
+    let namingIndex = 1;
+    while (botNameList.includes(newBotName)) {
+      newBotName = `${baseName}${namingIndex}`;
+      namingIndex++;
+    }
+  
+    // Create new custom bot
+    await botApi.createCustomBot({ user_id: userId, name: newBotName });
+    console.log(`✅ Created new bot: ${newBotName}`);
+    */
+  };
+  
+
   return (
     <>
       <div className="h-1/1 w-screen">
-        <h1 className="text-4xl font-extralight p-3 text-center">Custombot lists</h1>
+        <h1 className="text-4xl font-extralight p-3 text-center">
+          Custombot lists
+        </h1>
         <div
           className={`transition-all duration-300 w-full bg-gray-700 rounded-3xl p-4 overflow-y-auto ${
             selectedBot
@@ -25,7 +58,7 @@ const CustomBotList = ({ customBots }) => {
           ) : (
             customBots.map((bot) => (
               <div
-                onClick={() => getBotById(bot.id)}
+                onClick={() => handleChosenBot(bot)}
                 key={`div_bot_list_${bot.name}`}
                 className="bg-gray-600 rounded-2xl m-2 grid grid-cols-3 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
@@ -52,7 +85,10 @@ const CustomBotList = ({ customBots }) => {
               </div>
             ))
           )}
-          <button className="ml-auto mr-auto flex flex-row gap-2">
+          <button
+            className="ml-auto mr-auto flex flex-row gap-2"
+            onClick={createNewBot()}
+          >
             <img
               className="w-6 h-6"
               src="./src/assets/ui_components/add.png"
@@ -61,7 +97,7 @@ const CustomBotList = ({ customBots }) => {
             <p>Create new bot</p>
           </button>
         </div>
-        {selectedBot ? <CustomBotPanel botId={selectedBot} /> : null}
+        {selectedBot ? <CustomBotPanel selectedBot={selectedBot} /> : null}
       </div>
     </>
   );

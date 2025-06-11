@@ -5,8 +5,10 @@ import { DynamicPart } from "./DynamicPart";
 import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 
-const CustomBotPanel = ({ botId }) => {
+const CustomBotPanel = ({ selectedBot }) => {
   // List of all possible robot part types
+  const botId = selectedBot.id;
+  const botStatus = selectedBot.status;
   const possibleParts = [
     "skeleton",
     "head",
@@ -185,19 +187,63 @@ const CustomBotPanel = ({ botId }) => {
       return updated;
     });
   };
+  // Function for saving the currentParts into Backend Database
+  const saveCustomBot = async () => {
+    try {
+      const botApi = new Bots();
+      if (botStatus === "in_progress") {
+        for (const [part, info] of Object.entries(currentParts)) {
+          if (Array.isArray(info) && info.length > 0) {
+            // For asymmetrical parts like left/right arms
+            for (const asymPart of info) {
+              await botApi.updatePartOnCustomBot({
+                bot_id: botId,
+                part_id: asymPart.partId,
+                amount: 1,
+                direction: asymPart.direction,
+              });
+            }
+          } else if (info) {
+            // For symmetrical/center parts
+            await botApi.updatePartOnCustomBot({
+              bot_id: botId,
+              part_id: info.partId,
+              amount: 1,
+              direction: info.direction,
+            });
+          } else {
+            console.log(`Nothing to update for part: ${part}`);
+          }
+        }
+      }
+
+      console.log("CustomBot successfully updated!");
+    } catch (err) {
+      console.warn("Error while updating CustomBot:", err);
+    }
+  };
 
   return (
     <>
       {/* 3D Canvas */}
       <div className="bg-gray-900 ml-5 mr-5 mt-5 rounded-t-2xl">
-        <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
-          <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
-            Save customization
-          </button>
-          <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
-            Order this bot
-          </button>
-        </div>
+        {botStatus === "in_progress" ? (
+          <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
+            <button
+              className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600"
+              onClick={saveCustomBot()}
+            >
+              Save customization
+            </button>
+            <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
+              Order this bot
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
+            <h3 className="m-5">Custom Bot is ordered and cannot be edited anymore</h3>
+          </div>
+        )}
         <div className="flex gap-6 ml-5 mr-5">
           <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
             <Canvas
@@ -253,45 +299,53 @@ const CustomBotPanel = ({ botId }) => {
                         className="flex items-center gap-2 text-sm text-gray-300 mb-1"
                       >
                         <span className="w-14 capitalize">{direction}:</span>
-                        <button
-                          onClick={() => switchPart(typeKey, -1, direction)}
-                        >
-                          <img
-                            className="h-5"
-                            src="./src/assets/ui_components/left-arrow.png"
-                          />
-                        </button>
+                        {botStatus === "in_progress" ? (
+                          <button
+                            onClick={() => switchPart(typeKey, -1, direction)}
+                          >
+                            <img
+                              className="h-5"
+                              src="./src/assets/ui_components/left-arrow.png"
+                            />
+                          </button>
+                        ) : null}
                         <span className="flex-1 text-center text-xs truncate">
                           {modelUrl?.replace(".gltf", "") || "N/A"}
                         </span>
-                        <button
-                          onClick={() => switchPart(typeKey, 1, direction)}
-                        >
-                          <img
-                            className="h-5"
-                            src="./src/assets/ui_components/right-arrow.png"
-                          />
-                        </button>
+                        {botStatus === "in_progress" ? (
+                          <button
+                            onClick={() => switchPart(typeKey, 1, direction)}
+                          >
+                            <img
+                              className="h-5"
+                              src="./src/assets/ui_components/right-arrow.png"
+                            />
+                          </button>
+                        ) : null}
                       </div>
                     ))
                   ) : (
                     <div className="flex items-center gap-2 text-sm text-gray-300">
                       <span className="w-14">Option:</span>
-                      <button onClick={() => switchPart(typeKey, -1)}>
-                        <img
-                          className="h-5"
-                          src="./src/assets/ui_components/left-arrow.png"
-                        />
-                      </button>
+                      {botStatus === "in_progress" ? (
+                        <button onClick={() => switchPart(typeKey, -1)}>
+                          <img
+                            className="h-5"
+                            src="./src/assets/ui_components/left-arrow.png"
+                          />
+                        </button>
+                      ) : null}
                       <span className="flex-1 text-center text-xs truncate">
                         {partEntry.modelUrl?.replace(".gltf", "") || "N/A"}
                       </span>
-                      <button onClick={() => switchPart(typeKey, 1)}>
-                        <img
-                          className="h-5"
-                          src="./src/assets/ui_components/right-arrow.png"
-                        />
-                      </button>
+                      {botStatus === "in_progress" ? (
+                        <button onClick={() => switchPart(typeKey, 1)}>
+                          <img
+                            className="h-5"
+                            src="./src/assets/ui_components/right-arrow.png"
+                          />
+                        </button>
+                      ) : null}
                     </div>
                   )}
                 </div>
