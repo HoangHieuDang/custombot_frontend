@@ -10,35 +10,45 @@ const CustomBotList = ({ userId, customBots }) => {
     setSelectedBot(bot);
     return bot;
   };
-  
+
   //Handling Create new Bot
   const createNewBot = async () => {
-    /*
     const botApi = new Bots();
     const baseName = "new_custom_bot";
     let newBotName = baseName;
     const botNameList = [];
-  
-    // Build name list from existing customBots
+
+    // Collect existing bot names
     if (customBots) {
       for (const [customBotName] of Object.entries(customBots)) {
         botNameList.push(customBotName);
       }
     }
-  
-    // Try to find a unique name
+    console.log("botNameList:",botNameList)
+    // Find a unique name by appending index
     let namingIndex = 1;
     while (botNameList.includes(newBotName)) {
       newBotName = `${baseName}${namingIndex}`;
       namingIndex++;
     }
-  
-    // Create new custom bot
-    await botApi.createCustomBot({ user_id: userId, name: newBotName });
-    console.log(`✅ Created new bot: ${newBotName}`);
-    */
+
+    try {
+      // Use the updated API wrapper method
+      const { success, message } = await botApi.createCustomBot({
+        user_id: userId,
+        name: newBotName,
+      });
+
+      if (success) {
+        console.log(`Bot created: ${message}`);
+        // Optionally refresh bot list here if needed
+      } else {
+        console.warn(`Failed to create bot: ${message}`);
+      }
+    } catch (err) {
+      console.error("Unexpected error while creating bot:", err);
+    }
   };
-  
 
   return (
     <>
@@ -86,8 +96,8 @@ const CustomBotList = ({ userId, customBots }) => {
             ))
           )}
           <button
-            className="ml-auto mr-auto flex flex-row gap-2"
-            onClick={createNewBot()}
+            className="ml-auto mr-auto flex flex-row gap-2 cursor-pointer p-3 rounded-2xl hover:bg-gray-600 hover:text-amber-500 hover:font-bold"
+            onClick={()=>createNewBot()}
           >
             <img
               className="w-6 h-6"
