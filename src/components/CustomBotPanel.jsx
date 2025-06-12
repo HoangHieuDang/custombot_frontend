@@ -50,6 +50,8 @@ const CustomBotPanel = ({ selectedBot }) => {
   //   ]
   // }
   const [currentParts, setCurrentParts] = useState({});
+  //isCustomBotSaved tells whether the custombot has been saved after changes have been done
+  const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
 
   // First useEffect: Fetch parts for the current custom bot by ID
   useEffect(() => {
@@ -67,18 +69,23 @@ const CustomBotPanel = ({ selectedBot }) => {
         // Store symmetrical or asymmetrical current part
         if (["left", "right"].includes(direction)) {
           if (!currentPartsObj[type]) currentPartsObj[type] = [];
+          // Filter out existing same-direction part
+          currentPartsObj[type] = currentPartsObj[type].filter(
+            (entry) => entry.direction !== direction
+          );
+
           currentPartsObj[type].push({
             index: 0,
             direction,
-            partId: robot_part_id,
             modelUrl: model_path,
+            partId: robot_part_id,
           });
         } else {
           currentPartsObj[type] = {
             index: 0,
             direction,
-            partId: robot_part_id,
             modelUrl: model_path,
+            partId: robot_part_id,
           };
         }
 
@@ -183,11 +190,13 @@ const CustomBotPanel = ({ selectedBot }) => {
           partId: newPart.partId,
         };
       }
-
+      //set the state of isCustomBotSaved to false since changes have been made
+      setIsCustomBotSaved(false);
       return updated;
     });
   };
   // Function for saving the currentParts into Backend Database
+
   const saveCustomBot = async () => {
     try {
       const botApi = new Bots();
@@ -218,11 +227,17 @@ const CustomBotPanel = ({ selectedBot }) => {
       }
 
       console.log("CustomBot successfully updated!");
+      //set the isCustomBotSaved to true since saving in database
+      setIsCustomBotSaved(true);
     } catch (err) {
       console.warn("Error while updating CustomBot:", err);
     }
   };
-
+  //Everytime a new selectedBot is chosen from the CustomBotList
+  //Certain things must happen for example: isCustomBotSaved must be set to false again.
+  useEffect(() => {
+    setIsCustomBotSaved(false);
+  }, [selectedBot]);
   return (
     <>
       {/* 3D Canvas */}
@@ -230,10 +245,12 @@ const CustomBotPanel = ({ selectedBot }) => {
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
-              className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600"
-              onClick={()=>saveCustomBot()}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                isCustomBotSaved ? "animate-bg-green" : "bg-gray-700"
+              }`}
+              onClick={() => saveCustomBot()}
             >
-              Save customization
+              {isCustomBotSaved ? "Saved" : "Save customization"}
             </button>
             <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
               Order this bot
@@ -241,9 +258,14 @@ const CustomBotPanel = ({ selectedBot }) => {
           </div>
         ) : (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
-            <h3 className="m-5">Custom Bot is ordered and cannot be edited anymore</h3>
+            <h3 className="m-5">
+              Custom Bot is ordered and cannot be edited anymore
+            </h3>
           </div>
         )}
+        <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
+          Custombot: {selectedBot.name}
+        </h2>
         <div className="flex gap-6 ml-5 mr-5">
           <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
             <Canvas
