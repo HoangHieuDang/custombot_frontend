@@ -79,6 +79,28 @@ export default class Parts {
     }
   }
 
+  // inside your Parts class
+  async getPartTypeSets() {
+    try {
+      const response = await fetch(`${BASE_URL}/parts/types`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Fetched part type sets:", data);
+        return data; // { all_types: [...], asymmetrical_types: [...] }
+      } else {
+        console.error("Failed to fetch part type sets:", data.error);
+        return null;
+      }
+    } catch (error) {
+      console.error("Network error while fetching part type sets:", error);
+      return null;
+    }
+  }
+
   //Update
   async updatePart({ id, name, part_type, model_path, img_path, price }) {
     if (!id) {

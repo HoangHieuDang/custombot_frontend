@@ -9,27 +9,8 @@ const CustomBotPanel = ({ selectedBot }) => {
   // List of all possible robot part types
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
-  const possibleParts = [
-    "skeleton",
-    "head",
-    "arm",
-    "upper_arm",
-    "lower_arm",
-    "hand",
-    "shoulder",
-    "chest",
-    "upper_waist",
-    "lower_waist",
-    "side_skirt",
-    "front_skirt",
-    "back_skirt",
-    "upper_leg",
-    "lower_leg",
-    "knee",
-    "foot",
-    "backpack",
-  ];
-
+  const [possibleParts, setPossibleParts] = useState([]);
+  const [asymParts, setAsymParts] = useState([]);
   const basePath = "./src/assets/3d_assets/";
 
   // partUrls stores a list of available models for each part type
@@ -53,64 +34,146 @@ const CustomBotPanel = ({ selectedBot }) => {
   //isCustomBotSaved tells whether the custombot has been saved after changes have been done
   const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
 
-  // First useEffect: Fetch parts for the current custom bot by ID
+  // useEffect(()=>{
+  //   console.log("possibleParts: ", possibleParts);
+  //   console.log("asymParts: ", asymParts);
+  // },[possibleParts, asymParts])
+
+  //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
+    // Fetch possibleParts and asymParts if missing
+    const fetchPartTypesList = async () => {
+      if (possibleParts.length === 0 || asymParts.length === 0) {
+        const partsApi = new Parts();
+        const typeSets = await partsApi.getPartTypeSets();
+        if (typeSets) {
+          setPossibleParts((prev) =>
+            Array.from(new Set([...prev, ...typeSets.all_types]))
+          );
+          setAsymParts((prev) =>
+            Array.from(new Set([...prev, ...typeSets.asymmetrical_types]))
+          );
+        }
+      }
+    };
+    fetchPartTypesList();
+  }, [botId]);
+
+  //Second useEffect fetchCurrentBot when possibleParts and asymParts lists are available
+  useEffect(() => {
+    //only fetch currentBotParts when possibleParts list and asymmetrical Parts list are fetched
+    const isReady = possibleParts.length > 0 && asymParts.length > 0;
+    if (!isReady || !botId) return;
+    //fetchCurrentBot is responsible for fetching current bot parts into currentParts and initiate partUrls
+    //fetchCurrentBot also handles the case when current bot doesnt have all parts of all types
+
     const fetchCurrentBot = async () => {
       const botApi = new Bots();
+      const partsApi = new Parts();
       const botParts = await botApi.getPartsFromCustomBot(botId);
-      if (!Array.isArray(botParts)) return;
 
       const currentPartsObj = {};
       const partUrlsObj = {};
 
-      for (const part of botParts) {
-        const { type, direction, model_path, robot_part_id } = part;
+      // Clear previous bot's parts before injecting new ones
+      setPartUrls({});
 
-        // Store symmetrical or asymmetrical current part
-        if (["left", "right"].includes(direction)) {
-          if (!currentPartsObj[type]) currentPartsObj[type] = [];
-          // Filter out existing same-direction part
-          currentPartsObj[type] = currentPartsObj[type].filter(
-            (entry) => entry.direction !== direction
+      if (Array.isArray(botParts) && botParts.length > 0) {
+        // Bot has parts → build currentParts and preload partUrls
+        for (const part of botParts) {
+          const { type, direction, model_path, robot_part_id } = part;
+
+          // Handle symmetric/asymmetric directions
+          if (["left", "right"].includes(direction)) {
+            if (!currentPartsObj[type]) currentPartsObj[type] = [];
+            currentPartsObj[type] = currentPartsObj[type].filter(
+              (entry) => entry.direction !== direction
+            );
+            currentPartsObj[type].push({
+              index: 0,
+              direction,
+              modelUrl: model_path,
+              partId: robot_part_id,
+            });
+          } else {
+            currentPartsObj[type] = {
+              index: 0,
+              direction,
+              modelUrl: model_path,
+              partId: robot_part_id,
+            };
+          }
+
+          // Inject into partUrlsObj
+          if (!partUrlsObj[type]) partUrlsObj[type] = [];
+          const alreadyExists = partUrlsObj[type].some(
+            (p) => p.partId === robot_part_id
           );
-
-          currentPartsObj[type].push({
-            index: 0,
-            direction,
-            modelUrl: model_path,
-            partId: robot_part_id,
-          });
-        } else {
-          currentPartsObj[type] = {
-            index: 0,
-            direction,
-            modelUrl: model_path,
-            partId: robot_part_id,
-          };
+          if (!alreadyExists) {
+            partUrlsObj[type].push({
+              modelUrl: model_path,
+              partId: robot_part_id,
+            });
+          }
         }
-
-        // Collect into partUrls for prefetching
-        if (!partUrlsObj[type]) partUrlsObj[type] = [];
-        const alreadyExists = partUrlsObj[type].some(
-          (p) => p.partId === robot_part_id
-        );
-        if (!alreadyExists) {
-          partUrlsObj[type].push({
-            modelUrl: model_path,
-            partId: robot_part_id,
+      } else {
+        // If no parts, inject one fallback skeleton
+        try {
+          const res = await partsApi.getPart({
+            part_type: "skeleton",
+            page: 1,
+            page_size: 1,
           });
+
+          if (res?.results?.length > 0) {
+            const skeleton = res.results[0];
+            currentPartsObj["skeleton"] = {
+              index: 0,
+              direction: "center",
+              modelUrl: skeleton.model_path,
+              partId: skeleton.id,
+            };
+            partUrlsObj["skeleton"] = [
+              {
+                modelUrl: skeleton.model_path,
+                partId: skeleton.id,
+              },
+            ];
+          }
+        } catch (err) {
+          console.warn("Failed to fetch fallback skeleton part: ", err);
+        }
+      }
+
+      // Inject missing part slots for all defined types
+      for (const partType of possibleParts) {
+        if (asymParts.includes(partType)) {
+          if (!currentPartsObj[partType]) {
+            currentPartsObj[partType] = [
+              { index: 0, direction: "left", modelUrl: "", partId: null },
+              { index: 0, direction: "right", modelUrl: "", partId: null },
+            ];
+          }
+        } else if (!currentPartsObj[partType]) {
+          currentPartsObj[partType] = {
+            index: 0,
+            direction: "center",
+            modelUrl: "",
+            partId: null,
+          };
         }
       }
 
       setCurrentParts(currentPartsObj);
-      setPartUrls(partUrlsObj);
+      setPartUrls(partUrlsObj); // Set new data after reset
     };
 
     if (botId) fetchCurrentBot();
-  }, [botId]);
+  }, [botId, possibleParts, asymParts]);
 
-  // Second useEffect: Fetch more parts from database for each part type, excluding already used ones
+  // third useEffect: Fetch more parts from database for each part type, excluding already used ones
   useEffect(() => {
+    console.log("currentParts for third useEffect: ", currentParts);
     const fetchAllParts = async () => {
       const partsApi = new Parts();
       const newPartUrls = {};
@@ -160,8 +223,7 @@ const CustomBotPanel = ({ selectedBot }) => {
   // Function to switch between part options using left/right buttons
   const switchPart = (typeKey, delta, side = null) => {
     const urls = partUrls[typeKey];
-    if (!urls?.length) return;
-
+    if (!urls || urls.length === 0) return;
     setCurrentParts((prev) => {
       const updated = { ...prev };
 
@@ -240,7 +302,7 @@ const CustomBotPanel = ({ selectedBot }) => {
   }, [selectedBot]);
   return (
     <>
-      {/* 3D Canvas */}
+      {/* Panel for settings options and customBot Name edit */}
       <div className="bg-gray-900 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
@@ -263,10 +325,19 @@ const CustomBotPanel = ({ selectedBot }) => {
             </h3>
           </div>
         )}
-        <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
-          Custombot: {selectedBot.name}
-        </h2>
+        <div className="flex flex-row items-center ml-auto mr-auto justify-center">
+          <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
+            Custombot: {selectedBot.name}
+          </h2>
+          <img
+            src={"./src/assets/ui_components/edit.png"}
+            alt="edit-icon"
+            className="w-6 h-6"
+          />
+        </div>
+
         <div className="flex gap-6 ml-5 mr-5 items-center justify-center">
+          {/* 3D Canvas */}
           <div className="w-3/7 h-[700px] border rounded-md overflow-hidden mb-5">
             <Canvas
               style={{ backgroundColor: "#BE5B50" }}
@@ -278,15 +349,22 @@ const CustomBotPanel = ({ selectedBot }) => {
               <Suspense fallback={null}>
                 {Object.entries(currentParts).map(([type, entry]) => {
                   if (Array.isArray(entry)) {
-                    return entry.map(({ modelUrl, direction }, idx) => (
-                      <DynamicPart
-                        key={`${type}_${direction}_${idx}`}
-                        url={`${basePath}${modelUrl}`}
-                        direction={direction}
-                        rotation={[0, Math.PI / 2, 0]}
-                      />
-                    ));
+                    return entry
+                      .filter(
+                        (e) =>
+                          typeof e.modelUrl === "string" &&
+                          e.modelUrl.endsWith(".gltf")
+                      ) // <-- skip if empty only generate model with existing modelUrl and has .gltf format
+                      .map(({ modelUrl, direction }, idx) => (
+                        <DynamicPart
+                          key={`${type}_${direction}_${idx}`}
+                          url={`${basePath}${modelUrl}`}
+                          direction={direction}
+                          rotation={[0, Math.PI / 2, 0]}
+                        />
+                      ));
                   } else {
+                    if (!entry.modelUrl) return null; // <-- skip if empty
                     return (
                       <DynamicPart
                         key={`${type}`}
