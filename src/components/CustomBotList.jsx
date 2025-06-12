@@ -18,34 +18,35 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
     const baseName = "new_custom_bot";
     let newBotName = baseName;
     const botNameList = customBots.map((bot) => bot.name); // Extract names
-  
+
     // Generate a unique name
     let namingIndex = 1;
     while (botNameList.includes(newBotName)) {
       newBotName = `${baseName}${namingIndex}`;
       namingIndex++;
     }
-  
+
     try {
       // Send request to create the bot
       const result = await botApi.createCustomBot({
         user_id: userId,
         name: newBotName,
       });
-  
+
       // Handle structured response tuple of 2 elements (success(boolean), message(string))
       if (result?.success) {
         console.log(`Bot created: ${result.message}`);
         //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
-        refetchCustomBots()
+        refetchCustomBots();
       } else {
-        console.warn(`Failed to create bot: ${result?.message || "Unknown error"}`);
+        console.warn(
+          `Failed to create bot: ${result?.message || "Unknown error"}`
+        );
       }
     } catch (err) {
       console.error("Unexpected error while creating bot:", err);
     }
   };
-  
 
   return (
     <>
@@ -54,9 +55,9 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
           Custombot lists
         </h1>
         <div
-          className={`transition-all duration-300 w-full bg-gray-700 rounded-3xl p-4 overflow-y-auto ${
+          className={`transition-all duration-300 w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto ${
             selectedBot
-              ? "max-h-40 ml-5 mr-5 pr-3 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-700 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:mr-5 [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
               : "max-h-[600px]"
           }`}
         >

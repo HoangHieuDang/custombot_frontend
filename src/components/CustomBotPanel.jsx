@@ -241,7 +241,7 @@ const CustomBotPanel = ({ selectedBot }) => {
   return (
     <>
       {/* 3D Canvas */}
-      <div className="bg-gray-900 ml-5 mr-5 mt-5 rounded-t-2xl">
+      <div className="bg-gray-900 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
@@ -266,8 +266,8 @@ const CustomBotPanel = ({ selectedBot }) => {
         <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
           Custombot: {selectedBot.name}
         </h2>
-        <div className="flex gap-6 ml-5 mr-5">
-          <div className="w-3/5 h-[700px] border rounded-md overflow-hidden">
+        <div className="flex gap-6 ml-5 mr-5 items-center justify-center">
+          <div className="w-3/7 h-[700px] border rounded-md overflow-hidden mb-5">
             <Canvas
               style={{ backgroundColor: "#BE5B50" }}
               camera={{ position: [0, 0, 15], fov: 100 }}
@@ -302,7 +302,7 @@ const CustomBotPanel = ({ selectedBot }) => {
           </div>
 
           {/* Customize Option Panel */}
-          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white">
+          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5">
             <h2 className="text-xl font-semibold mb-4">Customize Parts</h2>
             {Object.entries(currentParts).map(([typeKey, partEntry]) => {
               if (typeKey === "skeleton") return null;
