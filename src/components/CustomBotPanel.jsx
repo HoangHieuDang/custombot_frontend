@@ -346,7 +346,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
 
   const editNameHandling = () => {
     setIsEditingName(true);
-    setEditedName(selectedBot.name)
+    setEditedName(selectedBot.name);
   };
   //Everytime a new selectedBot is chosen from the CustomBotList
   //Certain things must happen for example: isCustomBotSaved must be set to false again.
@@ -460,14 +460,14 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
 
           {/* Customize Option Panel */}
           <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5">
-            <h2 className="text-xl font-semibold mb-4">Customize Parts</h2>
+            <h2 className="text-2xl mb-4 font-extralight">Customize Parts</h2>
             {Object.entries(currentParts).map(([typeKey, partEntry]) => {
               if (typeKey === "skeleton") return null;
               const urls = partUrls[typeKey] || [];
 
               return (
-                <div key={typeKey} className="mb-4">
-                  <h3 className="text-lg font-medium mb-1 capitalize">
+                <div key={typeKey} className="mb-4 bg-gray-700 p-2 rounded-2xl">
+                  <h3 className="text-lg font-extralight mb-2 capitalize text-amber-400">
                     {typeKey}
                   </h3>
 
@@ -477,7 +477,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                         key={`${typeKey}_${direction}`}
                         className="flex items-center gap-2 text-sm text-gray-300 mb-1"
                       >
-                        <span className="w-14 capitalize">{direction}:</span>
+                        <span className="w-14 capitalize text-amber-600">{direction}:</span>
                         {botStatus === "in_progress" ? (
                           <button
                             onClick={() => switchPart(typeKey, -1, direction)}
@@ -505,7 +505,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                     ))
                   ) : (
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <span className="w-14">Option:</span>
+                      <span className="w-14 capitalize text-amber-400">Center:</span>
                       {botStatus === "in_progress" ? (
                         <button onClick={() => switchPart(typeKey, -1)}>
                           <img
