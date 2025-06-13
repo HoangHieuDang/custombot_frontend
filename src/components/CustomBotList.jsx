@@ -57,7 +57,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
         <div
           className={`transition-all duration-300 w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto ${
             selectedBot
-              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-amber-900 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
               : "max-h-[600px]"
           }`}
         >
@@ -105,7 +105,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
             <p>Create new bot</p>
           </button>
         </div>
-        {selectedBot ? <CustomBotPanel selectedBot={selectedBot} /> : null}
+        {selectedBot ? <CustomBotPanel selectedBot={selectedBot} refetchCustomBots={refetchCustomBots} /> : null}
       </div>
     </>
   );

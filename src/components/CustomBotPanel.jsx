@@ -5,14 +5,17 @@ import { DynamicPart } from "./DynamicPart";
 import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 
-const CustomBotPanel = ({ selectedBot }) => {
-  // List of all possible robot part types
+const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
+  const basePath = "./src/assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
+  // List of all possible robot part types
   const [possibleParts, setPossibleParts] = useState([]);
+  // List of all asymmetrical parts like arms, shoulders,... which have left and right sides
   const [asymParts, setAsymParts] = useState([]);
-  const basePath = "./src/assets/3d_assets/";
-
+  // States for editing the current customBot name
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(selectedBot.name);
   // partUrls stores a list of available models for each part type
   // Example:
   // partUrls = {
@@ -20,7 +23,6 @@ const CustomBotPanel = ({ selectedBot }) => {
   //   chest: [{ modelUrl: 'cb_chest_1.gltf', partId: 6 }]
   // }
   const [partUrls, setPartUrls] = useState({});
-
   // currentParts stores the selected part for this bot, including left/right if asymmetric
   // Example:
   // currentParts = {
@@ -34,14 +36,15 @@ const CustomBotPanel = ({ selectedBot }) => {
   //isCustomBotSaved tells whether the custombot has been saved after changes have been done
   const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
 
-  // useEffect(()=>{
-  //   console.log("possibleParts: ", possibleParts);
-  //   console.log("asymParts: ", asymParts);
-  // },[possibleParts, asymParts])
-
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
     // Fetch possibleParts and asymParts if missing
+    if (!botId) return;
+
+    // Step 1: Reset state before fetching new bot's data
+    setCurrentParts({});
+    setPartUrls({});
+
     const fetchPartTypesList = async () => {
       if (possibleParts.length === 0 || asymParts.length === 0) {
         const partsApi = new Parts();
@@ -71,7 +74,6 @@ const CustomBotPanel = ({ selectedBot }) => {
       const botApi = new Bots();
       const partsApi = new Parts();
       const botParts = await botApi.getPartsFromCustomBot(botId);
-
       const currentPartsObj = {};
       const partUrlsObj = {};
 
@@ -114,6 +116,34 @@ const CustomBotPanel = ({ selectedBot }) => {
               modelUrl: model_path,
               partId: robot_part_id,
             });
+          }
+        }
+        // Ensure both 'left' and 'right' entries exist for asymmetrical parts
+        for (const partType of asymParts) {
+          if (Array.isArray(currentPartsObj[partType])) {
+            const hasLeft = currentPartsObj[partType].some(
+              (p) => p.direction === "left"
+            );
+            const hasRight = currentPartsObj[partType].some(
+              (p) => p.direction === "right"
+            );
+
+            if (!hasLeft) {
+              currentPartsObj[partType].push({
+                index: 0,
+                direction: "left",
+                modelUrl: "",
+                partId: null,
+              });
+            }
+            if (!hasRight) {
+              currentPartsObj[partType].push({
+                index: 0,
+                direction: "right",
+                modelUrl: "",
+                partId: null,
+              });
+            }
           }
         }
       } else {
@@ -259,7 +289,7 @@ const CustomBotPanel = ({ selectedBot }) => {
   };
   // Function for saving the currentParts into Backend Database
 
-  const saveCustomBot = async () => {
+  const saveCustomBotParts = async () => {
     try {
       const botApi = new Bots();
       if (botStatus === "in_progress") {
@@ -295,10 +325,34 @@ const CustomBotPanel = ({ selectedBot }) => {
       console.warn("Error while updating CustomBot:", err);
     }
   };
+
+  const saveCustomBotName = async () => {
+    const botApi = new Bots();
+    try {
+      const response = await botApi.updateCustomBot(selectedBot.id, {
+        name: editedName,
+      });
+
+      if (response) {
+        console.log("Name updated:", response);
+        setIsEditingName(false);
+        //refetch customBots to update the new name of bot on the bot list
+        refetchCustomBots();
+      }
+    } catch (err) {
+      console.error("Failed to update custom bot name:", err);
+    }
+  };
+
+  const editNameHandling = () => {
+    setIsEditingName(true);
+    setEditedName(selectedBot.name)
+  };
   //Everytime a new selectedBot is chosen from the CustomBotList
   //Certain things must happen for example: isCustomBotSaved must be set to false again.
   useEffect(() => {
     setIsCustomBotSaved(false);
+    setEditedName(selectedBot.name);
   }, [selectedBot]);
   return (
     <>
@@ -310,7 +364,7 @@ const CustomBotPanel = ({ selectedBot }) => {
               className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
                 isCustomBotSaved ? "animate-bg-green" : "bg-gray-700"
               }`}
-              onClick={() => saveCustomBot()}
+              onClick={() => saveCustomBotParts()}
             >
               {isCustomBotSaved ? "Saved" : "Save customization"}
             </button>
@@ -326,14 +380,39 @@ const CustomBotPanel = ({ selectedBot }) => {
           </div>
         )}
         <div className="flex flex-row items-center ml-auto mr-auto justify-center">
-          <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
-            Custombot: {selectedBot.name}
-          </h2>
-          <img
-            src={"./src/assets/ui_components/edit.png"}
-            alt="edit-icon"
-            className="w-6 h-6"
-          />
+          {isEditingName ? (
+            <Fragment>
+              <label htmlFor="botname" className="mr-2 text-amber-200">
+                Custombot:
+              </label>
+              <input
+                type="text"
+                name="botname"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                className="text-white m-4 p-1 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              />
+              <button
+                onClick={saveCustomBotName}
+                className="ml-2 mt-4 mb-4 p-1 rounded bg-gray-700 text-white font-extralight hover:bg-gray-600 cursor-pointer"
+              >
+                Save
+              </button>
+            </Fragment>
+          ) : (
+            <>
+              <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
+                Custombot: {editedName}
+              </h2>
+              <button onClick={editNameHandling}>
+                <img
+                  src={"./src/assets/ui_components/edit.png"}
+                  alt="edit-icon"
+                  className="w-6 h-6 ml-2 hover:opacity-75"
+                />
+              </button>
+            </>
+          )}
         </div>
 
         <div className="flex gap-6 ml-5 mr-5 items-center justify-center">
