@@ -2,7 +2,6 @@ import { useState } from "react";
 import httpClient from "../api/httpClient";
 import { useNavigate } from "react-router-dom";
 
-
 function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,14 +13,15 @@ function Login({ setUser }) {
         email,
         password,
       });
-
+      //add a small delay
+      await new Promise((resolve) => setTimeout(resolve, 100));
       const res = await httpClient.get("/users/@me");
-      console.log("res",res)
+      console.log("res", res);
       setUser(res.data);
       navigate("/custombot");
     } catch (err) {
       alert("Login failed.");
-      console.warn("Can not login: ", err)
+      console.warn("Can not login: ", err);
     }
   };
 
