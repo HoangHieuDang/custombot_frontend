@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-export default function Header() {
+export default function Header({user}) {
   //define a function for styling for list element of the nav depending on isActive argument given by NavLink component
   function liCssStyling(isActive) {
     return isActive

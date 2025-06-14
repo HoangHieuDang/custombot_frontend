@@ -1,52 +1,64 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import CustomBot from "./pages/CustomBot";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import Order from "./pages/Order";
 import Login from "./pages/Login";
-import Users from "./api/usersApi";
+import httpClient from "./api/httpClient";
+import Register from "./pages/Register";
+import { BASE_URL } from "./api/apiConnConfig";
 
 function App() {
-  const [token, setToken] = useState(null)
   const [user, setUser] = useState(null);
-  const userId = 1;
-  
+  const [loaded, setLoaded] = useState(false); // prevent flicker
+
   useEffect(() => {
-    const fetchUser = async () => {
-      const userApi = new Users()
+    async function fetchUser() {
       try {
-        const data = await userApi.getUser(userId)
-        if (Array.isArray(data) && data.length > 0) {
-          setUser(data[0]);
-        }
+        const res = await httpClient.get(`${BASE_URL}/users/@me`);
+        setUser(res.data);
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.warn(err);
+        setUser(null);
+      } finally {
+        setLoaded(true);
       }
-    };
+    }
 
     fetchUser();
   }, []);
 
-  if(!token){
+  useEffect(()=>{console.log(user)},[user])
 
-    setToken("fake token")
-    return <Login setToken={setToken}/>
-  }
+  if (!loaded) return <div>Loading...</div>;
+
   return (
-    <>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/custombot" element={<CustomBot userId={userId} />} />
-          <Route path="/profile" element={<Profile userId={userId}/>} />
-          <Route path="/order" element={<Order userId={userId}/>}/>
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Header user={user} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/custombot"
+          element={
+            user ? <CustomBot userId={user.id} /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            user ? <Profile userId={user.id} /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/order"
+          element={user ? <Order userId={user.id} /> : <Navigate to="/login" />}
+        />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
