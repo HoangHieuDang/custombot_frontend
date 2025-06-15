@@ -38,33 +38,38 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
 
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
-    // Fetch possibleParts and asymParts if missing
     if (!botId) return;
-
-    // Step 1: Reset state before fetching new bot's data
+  
+    // Reset before fetching new data
     setCurrentParts({});
     setPartUrls({});
-
+  
     const fetchPartTypesList = async () => {
-      if (possibleParts.length === 0 || asymParts.length === 0) {
-        const partsApi = new Parts();
-        const typeSets = await partsApi.getPartTypeSets();
-        if (typeSets) {
-          setPossibleParts((prev) =>
-            Array.from(new Set([...prev, ...typeSets.all_types]))
-          );
-          setAsymParts((prev) =>
-            Array.from(new Set([...prev, ...typeSets.asymmetrical_types]))
-          );
-        }
+      const partsApi = new Parts();
+      const metadataList = await partsApi.getPartTypeSets();
+  
+      if (metadataList) {
+        // Extract types
+        const allTypes = metadataList.map((entry) => entry.type);
+        const asymTypes = metadataList
+          .filter((entry) => entry.is_asymmetrical)
+          .map((entry) => entry.type);
+  
+        setPossibleParts(allTypes);
+        setAsymParts(asymTypes);
       }
     };
+  
     fetchPartTypesList();
   }, [botId]);
+  
+  
 
   //Second useEffect fetchCurrentBot when possibleParts and asymParts lists are available
   useEffect(() => {
     //only fetch currentBotParts when possibleParts list and asymmetrical Parts list are fetched
+    console.log("possibleParts: ", possibleParts)
+    console.log("asymParts: ", asymParts)
     const isReady = possibleParts.length > 0 && asymParts.length > 0;
     if (!isReady || !botId) return;
     //fetchCurrentBot is responsible for fetching current bot parts into currentParts and initiate partUrls

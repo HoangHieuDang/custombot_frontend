@@ -79,24 +79,27 @@ export default class Parts {
     }
   }
 
-  // inside your Parts class
   async getPartTypeSets() {
+    /**
+     * Fetch part type metadata and return it as { all_types, asymmetrical_types }
+     * Replaces old `/parts/types` endpoint.
+     */
     try {
-      const response = await fetch(`${BASE_URL}/parts/types`, {
+      const response = await fetch(`${BASE_URL}/parts/all_part_type_metadata`, {
         method: "GET",
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Fetched part type sets:", data);
-        return data; // { all_types: [...], asymmetrical_types: [...] }
+        console.log("Fetched part type metadata:", data);
+        return data; // [ { type: "arm", is_asymmetrical: true }, ... ]
       } else {
-        console.error("Failed to fetch part type sets:", data.error);
+        console.error("Failed to fetch part type metadata:", data.error);
         return null;
       }
     } catch (error) {
-      console.error("Network error while fetching part type sets:", error);
+      console.error("Network error while fetching part type metadata:", error);
       return null;
     }
   }
