@@ -26,39 +26,60 @@ function Login({ setUser }) {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl mb-4">Login</h1>
-      <input
-        className="block border p-2 mb-2"
-        type="text"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+    <section className="relative h-full w-full flex items-center justify-center #222222">
+      <img
+        className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30"
+        src="./src/assets/images/Custombot_Banner_Transparent.png"
+        alt="a banner picture of custom bots"
       />
-      <input
-        className="block border p-2 mb-2"
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        className="bg-blue-500 text-white px-4 py-2 w-full mb-4"
-        onClick={loginUser}
-      >
-        Log in
-      </button>
-
-      <div className="text-center text-sm text-gray-600">
-        Not a user yet?{" "}
-        <button
-          className="text-blue-500 underline"
-          onClick={() => navigate("/register")}
-        >
-          Register here
-        </button>
+      <div className="absolute marquee-wrapper h-1/1 w-1/1 z-3 flex flex-row items-center justify-evenly">
+        <p className="z-0 text-9xl text-amber-100 font-extralight  marquee-content-right">
+          Custom your own robot
+        </p>
+        <p className="z-0 text-6xl text-amber-50 font-extralight  marquee-content-left">
+          Combine the parts yourself
+        </p>
+        <p className="z-0 text-4xl text-amber-200 font-extralight  marquee-content-right">
+          Make your dream robot come true
+        </p>
+        <p className="z-0 text-8xl text-amber-50 font-extralight  marquee-content-right">
+          It is never too late to have fun
+        </p>
       </div>
-    </div>
+      <div className="ml-auto mr-auto w-6/12 p-4 z-10 bg-gray-700 flex flex-col items-center justify-center rounded-2xl">
+        <h1 className="text-2xl font-extralight mb-4 text-amber-300">Login</h1>
+        <input
+          className="border p-2 mb-2 w-3/10"
+          type="text"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="border p-2 mb-2 w-3/10"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className="bg-blue-500 text-white px-4 py-2 w-3/10 mb-4 rounded cursor-pointer border-1 border-blue-500 hover:border-amber-200"
+          onClick={loginUser}
+        >
+          Log in
+        </button>
+
+        <div className="text-center text-sm text-gray-400">
+          Not a user yet?{" "}
+          <button
+            className="text-blue-500 underline"
+            onClick={() => navigate("/register")}
+          >
+            Register here
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 

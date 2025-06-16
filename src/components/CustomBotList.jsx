@@ -55,10 +55,10 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
           Custombot lists
         </h1>
         <div
-          className={`transition-all duration-300 w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto ${
+          className={`transition-all duration-500 w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
             selectedBot
-              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-amber-900 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
-              : "max-h-[600px]"
+              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+              : "max-h-9/10"
           }`}
         >
           {customBots.length === 0 ? (
@@ -68,7 +68,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
               <div
                 onClick={() => handleChosenBot(bot)}
                 key={`div_bot_list_${bot.name}`}
-                className="bg-gray-600 rounded-2xl m-2 grid grid-cols-3 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
+                className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-3 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
                 <p className="m-2">{`${bot.name}`}</p>
                 <p className="m-2 justify-self-start">
@@ -94,7 +94,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
             ))
           )}
           <button
-            className="ml-auto mr-auto flex flex-row gap-2 cursor-pointer p-3 rounded-2xl hover:bg-gray-600 hover:text-amber-500 hover:font-bold"
+            className="transition-all duration-200 ml-auto mr-auto flex flex-row gap-2 cursor-pointer p-3 rounded-2xl hover:bg-gray-600 hover:text-amber-500 hover:border-1 hover:border-amber-500 hover:font-bold"
             onClick={() => createNewBot()}
           >
             <img

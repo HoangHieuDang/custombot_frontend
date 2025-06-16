@@ -39,37 +39,35 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
     if (!botId) return;
-  
+
     // Reset before fetching new data
     setCurrentParts({});
     setPartUrls({});
-  
+
     const fetchPartTypesList = async () => {
       const partsApi = new Parts();
       const metadataList = await partsApi.getPartTypeSets();
-  
+
       if (metadataList) {
         // Extract types
         const allTypes = metadataList.map((entry) => entry.type);
         const asymTypes = metadataList
           .filter((entry) => entry.is_asymmetrical)
           .map((entry) => entry.type);
-  
+
         setPossibleParts(allTypes);
         setAsymParts(asymTypes);
       }
     };
-  
+
     fetchPartTypesList();
   }, [botId]);
-  
-  
 
   //Second useEffect fetchCurrentBot when possibleParts and asymParts lists are available
   useEffect(() => {
     //only fetch currentBotParts when possibleParts list and asymmetrical Parts list are fetched
-    console.log("possibleParts: ", possibleParts)
-    console.log("asymParts: ", asymParts)
+    console.log("possibleParts: ", possibleParts);
+    console.log("asymParts: ", asymParts);
     const isReady = possibleParts.length > 0 && asymParts.length > 0;
     if (!isReady || !botId) return;
     //fetchCurrentBot is responsible for fetching current bot parts into currentParts and initiate partUrls
@@ -362,7 +360,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
   return (
     <>
       {/* Panel for settings options and customBot Name edit */}
-      <div className="bg-gray-900 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
+      <div className="bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
@@ -422,9 +420,9 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
 
         <div className="flex gap-6 ml-5 mr-5 items-center justify-center">
           {/* 3D Canvas */}
-          <div className="w-3/7 h-[700px] border rounded-md overflow-hidden mb-5">
+          <div className="transition-all duration-100 w-3/7 h-[700px] border rounded-md overflow-hidden mb-5 hover:border-2 hover:border-amber-300">
             <Canvas
-              style={{ backgroundColor: "#BE5B50" }}
+              style={{ backgroundColor: "#BE5B55" }}
               camera={{ position: [0, 0, 15], fov: 100 }}
             >
               <ambientLight intensity={5} />
@@ -464,14 +462,17 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
           </div>
 
           {/* Customize Option Panel */}
-          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5">
+          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5 hover:border-amber-300 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full">
             <h2 className="text-2xl mb-4 font-extralight">Customize Parts</h2>
             {Object.entries(currentParts).map(([typeKey, partEntry]) => {
               if (typeKey === "skeleton") return null;
               const urls = partUrls[typeKey] || [];
 
               return (
-                <div key={typeKey} className="mb-4 bg-gray-700 p-2 rounded-2xl">
+                <div
+                  key={typeKey}
+                  className="transition-all duration-300 mb-4 bg-gray-700 p-2 rounded-2xl border-1 hover:border-amber-400"
+                >
                   <h3 className="text-lg font-extralight mb-2 capitalize text-amber-400">
                     {typeKey}
                   </h3>
@@ -480,15 +481,17 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                     partEntry.map(({ direction, index, modelUrl }, i) => (
                       <div
                         key={`${typeKey}_${direction}`}
-                        className="flex items-center gap-2 text-sm text-gray-300 mb-1"
+                        className="flex items-center gap-2 text-sm text-gray-300 mb-1 hover:text-amber-200"
                       >
-                        <span className="w-14 capitalize text-amber-600">{direction}:</span>
+                        <span className="w-14 capitalize text-amber-600">
+                          {direction}:
+                        </span>
                         {botStatus === "in_progress" ? (
                           <button
                             onClick={() => switchPart(typeKey, -1, direction)}
                           >
                             <img
-                              className="h-5"
+                              className="transition-all duration-100 h-5 hover:brightness-50"
                               src="./src/assets/ui_components/left-arrow.png"
                             />
                           </button>
@@ -501,7 +504,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                             onClick={() => switchPart(typeKey, 1, direction)}
                           >
                             <img
-                              className="h-5"
+                              className="transition-all duration-100 h-5 hover:brightness-50"
                               src="./src/assets/ui_components/right-arrow.png"
                             />
                           </button>
@@ -510,11 +513,13 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                     ))
                   ) : (
                     <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <span className="w-14 capitalize text-amber-400">Center:</span>
+                      <span className="w-14 capitalize text-amber-500">
+                        Center:
+                      </span>
                       {botStatus === "in_progress" ? (
                         <button onClick={() => switchPart(typeKey, -1)}>
                           <img
-                            className="h-5"
+                            className="transition-all duration-100 h-5 hover:brightness-50"
                             src="./src/assets/ui_components/left-arrow.png"
                           />
                         </button>
@@ -525,7 +530,7 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
                       {botStatus === "in_progress" ? (
                         <button onClick={() => switchPart(typeKey, 1)}>
                           <img
-                            className="h-5"
+                            className="transition-all duration-100 h-5 hover:brightness-50"
                             src="./src/assets/ui_components/right-arrow.png"
                           />
                         </button>

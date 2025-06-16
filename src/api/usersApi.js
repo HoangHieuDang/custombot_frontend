@@ -83,6 +83,20 @@ export default class Users {
     }
   }
 
+  async logOutUser() {
+    try {
+      const response = await fetch(`${BASE_URL}/users/logout`, {
+        method: "POST",
+        credentials: "include", // ← must include this
+      });
+
+      return response.ok;
+    } catch (err) {
+      console.warn("Error when logging user out: ", err);
+      return false;
+    }
+  }
+
   //Delete
   // Function to delete a user
   async deleteUser(userId) {

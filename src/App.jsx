@@ -36,7 +36,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header user={user} />
+      <Header user={user} onLogout={() => setUser(null)} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
