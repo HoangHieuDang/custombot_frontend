@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Home from "./pages/Home";
+import Footer from "./components/Footer";
 import CustomBot from "./pages/CustomBot";
 import Profile from "./pages/Profile";
 import Header from "./components/Header";
@@ -30,7 +31,9 @@ function App() {
     fetchUser();
   }, []);
 
-  useEffect(()=>{console.log(user)},[user])
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   if (!loaded) return <div>Loading...</div>;
 
@@ -58,6 +61,7 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
