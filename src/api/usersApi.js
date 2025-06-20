@@ -44,42 +44,41 @@ export default class Users {
   }
 
   //Update
-  async updateUser({ id, username, createdAt, email } = {}) {
-    let api_put_req = "";
-    //user_id must be given for this request to response
-    if (id) {
-      api_put_req = `/users/${id}`;
-    } else {
-      throw new Error("User ID is required!");
-    }
-    //only update fields which are given
+  async updateUser({ id, username, email, password } = {}) {
+    if (!id) return { success: false, message: "User ID is required." };
+
+    const api_put_req = `/users/${id}`;
     const updatedFields = {};
+
     if (username) updatedFields.username = username;
     if (email) updatedFields.email = email;
-    if (createdAt) updatedFields.createdAt = createdAt;
+    if (password) updatedFields.password = password;
+
     if (Object.keys(updatedFields).length === 0) {
-      throw new Error("No fields to update.");
+      return { success: false, message: "No fields to update." };
     }
-    //send the PUT request to api server
+
     try {
       const response = await fetch(`${BASE_URL}${api_put_req}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json", // Make sure the server knows that json is being sent
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedFields),
       });
+
       const data = await response.json();
+
       if (response.ok) {
         console.log(`User ${id} updated successfully:`, data.message);
-        return data; // You could return the response data here for further use
+        return { success: true, message: data.message };
       } else {
-        console.error("Error updating user:", data.error);
-        throw new Error(data.error || "Failed to update user.");
+        console.warn("Error updating user:", data.error);
+        return { success: false, message: data.error };
       }
     } catch (error) {
       console.error("Network error:", error);
-      throw error; // Rethrow or handle the error as necessary
+      return { success: false, message: "Network error, please try again." };
     }
   }
 

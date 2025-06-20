@@ -15,25 +15,21 @@ function App() {
   const [user, setUser] = useState(null);
   const [loaded, setLoaded] = useState(false); // prevent flicker
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await httpClient.get(`${BASE_URL}/users/@me`);
-        setUser(res.data);
-      } catch (err) {
-        console.warn(err);
-        setUser(null);
-      } finally {
-        setLoaded(true);
-      }
+  async function fetchUser() {
+    try {
+      const res = await httpClient.get(`${BASE_URL}/users/@me`);
+      setUser(res.data);
+    } catch (err) {
+      console.warn(err);
+      setUser(null);
+    } finally {
+      setLoaded(true);
     }
+  }
 
+  useEffect(() => {
     fetchUser();
   }, []);
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   if (!loaded) return <div>Loading...</div>;
 
@@ -51,7 +47,7 @@ function App() {
         <Route
           path="/profile"
           element={
-            user ? <Profile userId={user.id} /> : <Navigate to="/login" />
+            user ? <Profile key={user.id} user={user} fetchUser={fetchUser} /> : <Navigate to="/login" /> //reassign user.id to key property everytime the user gets fetched again will force the component to re-render
           }
         />
         <Route
