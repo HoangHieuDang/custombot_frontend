@@ -35,8 +35,10 @@ function App() {
 
   return (
     <BrowserRouter>
+      {/* without flex div there will be no awareness of screen height, components will not be arranged dynamically which can lead to unwanted overlapping*/}
       <div className="flex flex-col min-h-screen">
         <Header user={user} onLogout={() => setUser(null)} />
+        {/* flex-grow allows the main component to stretch and fill in the blank space if there is still place on screen and push the footer element down */}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />

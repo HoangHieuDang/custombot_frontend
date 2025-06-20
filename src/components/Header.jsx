@@ -38,11 +38,13 @@ export default function Header({ user, onLogout }) {
   return (
     <header>
       <nav className="inline-flex flex-row w-full bg-slate-800 items-center">
-        <img
-          src="/src/assets/images/PLAplay_logo.png"
-          className="ml-5 h-9 w-auto justify-self mt-auto mb-auto"
-          alt="PLAplay logo"
-        />
+        <NavLink to="/" end>
+          <img
+            className="flex ml-5 h-8 justify-self mt-auto mb-auto cursor-pointer"
+            src="/src/assets/images/PLAplay_logo.png"
+            alt="PLAplay logo"
+          />
+        </NavLink>
         <ul className="flex h-16 p-5 items-center justify-between">
           <li className={liClassName}>
             <NavLink
@@ -87,16 +89,20 @@ export default function Header({ user, onLogout }) {
             className="w-full p-5 pr-10 flex flex-row items-center justify-end relative"
             ref={dropdownRef}
           >
+            <p className="font-extralight mr-2 text-amber-500">
+              Hi, {user.username}!
+            </p>
             <button onClick={() => setShowMenu(!showMenu)}>
               <img
-                className="w-6 h-6"
+                className="w-6 h-6 cursor-pointer hover:brightness-75"
                 src="./src/assets/ui_components/user.png"
+                alt="user-icon"
               />
             </button>
             {showMenu && (
               <div className="absolute grid grid-cols-1 gap-1 items-center justify-center top-14 right-0 bg-gray-700 text-white shadow-md rounded-md w-40 z-50">
                 <button
-                  className="block w-full text-center font-extralight px-4 py-2 ml-auto mr-auto hover:bg-gray-500 rounded"
+                  className="block w-full text-center font-extralight px-4 py-2 ml-auto mr-auto hover:bg-gray-500 rounded cursor-pointer"
                   onClick={() => {
                     setShowMenu(false);
                     userLogOut(); // Call logout function
@@ -106,7 +112,7 @@ export default function Header({ user, onLogout }) {
                 </button>
                 <Link to="/profile">
                   <button
-                    className="block w-full text-center font-extralight px-4 py-2 ml-auto mr-auto hover:bg-gray-500 rounded"
+                    className="block w-full text-center font-extralight px-4 py-2 ml-auto mr-auto hover:bg-gray-500 rounded cursor-pointer"
                     onClick={() => {
                       setShowMenu(false);
                     }}
@@ -120,12 +126,12 @@ export default function Header({ user, onLogout }) {
         ) : (
           <div className="w-full p-5 pr-5 flex flex-row items-center justify-end relative">
             <Link to="/login">
-              <button className="rounded-lg px-2 py-2 mr-5 border-1 border-amber-100 bg-gray-900 hover:bg-gray-700 font-extralight">
+              <button className="rounded-lg px-2 py-2 mr-5 border-1 border-amber-100 bg-gray-900 hover:bg-gray-700 font-extralight cursor-pointer">
                 Log in
               </button>
             </Link>
             <Link to="/register">
-              <button className="rounded-lg px-2 py-2 ml-5 mr-5  border-1 border-amber-100 bg-gray-900 hover:bg-gray-700 font-extralight">
+              <button className="rounded-lg px-2 py-2 ml-5 mr-5  border-1 border-amber-100 bg-gray-900 hover:bg-gray-700 font-extralight cursor-pointer">
                 Register
               </button>
             </Link>

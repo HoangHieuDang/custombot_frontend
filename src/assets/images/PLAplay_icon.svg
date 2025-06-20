@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1638 1841" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-681.098,-579.862)">
+        <g id="Background" transform="matrix(1.87459,0,0,0.46149,-148.486,344.631)">
+            <path d="M1316.23,509.72L442.542,509.72L879.053,4497.4L1316.23,509.72Z" style="fill:rgb(68,68,68);"/>
+        </g>
+        <g id="Leg-right" serif:id="Leg right" transform="matrix(3.57416,0,0,3.25449,-714.926,-15.3513)">
+            <g id="Mid" transform="matrix(-0.339147,-0.0600546,-0.166104,0.938039,1025.74,153.245)">
+                <path d="M990.028,396.39L746.288,395.854L874.739,631.809L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Dark" transform="matrix(0.524484,0,0,0.567204,338.728,273.381)">
+                <path d="M623.046,395.854L701.94,363.934L544.152,740.464L623.046,395.854Z" style="fill:rgb(255,190,103);"/>
+            </g>
+            <g id="Light" transform="matrix(-0.524484,0,0,0.112533,1098.3,448.696)">
+                <path d="M912.506,150.376L746.288,276.847L825.181,437.337L912.506,150.376Z" style="fill:rgb(255,239,205);"/>
+            </g>
+        </g>
+        <g id="Leg-left" serif:id="Leg left" transform="matrix(3.57416,0,0,3.25449,-123.352,-15.3513)">
+            <g id="Mid1" serif:id="Mid" transform="matrix(0.339147,-0.0600546,0.166104,0.938039,48.1589,153.245)">
+                <path d="M990.028,396.39L746.288,395.854L874.739,631.809L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Dark1" serif:id="Dark" transform="matrix(0.524484,0,0,0.567204,81.614,257.235)">
+                <path d="M623.046,424.321L701.94,367.388L701.94,768.93L623.046,424.321Z" style="fill:rgb(255,190,103);"/>
+            </g>
+            <g id="Light1" serif:id="Light" transform="matrix(0.524484,0,0,0.112533,-24.4028,448.696)">
+                <path d="M912.506,150.376L746.288,278.884L825.181,437.337L912.506,150.376Z" style="fill:rgb(255,239,205);"/>
+            </g>
+        </g>
+        <g id="Arm-left" serif:id="Arm left" transform="matrix(3.57416,0,0,3.00723,-419.139,-538.075)">
+            <g id="Mid2" serif:id="Mid" transform="matrix(0.339147,-0.0600546,0.166104,0.938039,48.1589,153.245)">
+                <path d="M990.028,396.39L746.288,395.854L874.739,631.809L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Dark2" serif:id="Dark" transform="matrix(0.524484,0,0,0.567204,81.614,257.235)">
+                <path d="M623.046,424.321L701.94,367.388L701.94,768.93L623.046,424.321Z" style="fill:rgb(255,190,103);"/>
+            </g>
+            <g id="Light2" serif:id="Light" transform="matrix(0.524484,0,0,0.112533,-24.4028,448.696)">
+                <path d="M904.075,150.376L746.288,276.847L825.181,437.337L904.075,150.376Z" style="fill:rgb(255,239,205);"/>
+            </g>
+        </g>
+        <g id="Arm-right" serif:id="Arm right" transform="matrix(3.57416,0,0,3.00723,-419.139,-538.075)">
+            <g id="Mid3" serif:id="Mid" transform="matrix(-0.339147,-0.0600546,-0.166104,0.938039,1025.74,153.245)">
+                <path d="M990.028,396.39L746.288,395.854L874.739,631.809L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Dark3" serif:id="Dark" transform="matrix(0.524484,0,0,0.567204,338.728,273.381)">
+                <path d="M623.046,395.854L701.94,363.934L544.152,740.464L623.046,395.854Z" style="fill:rgb(255,190,103);"/>
+            </g>
+            <g id="Light3" serif:id="Light" transform="matrix(-0.524484,0,0,0.112533,1098.3,448.696)">
+                <path d="M904.075,150.376L746.288,276.847L825.181,437.337L904.075,150.376Z" style="fill:rgb(255,239,205);"/>
+            </g>
+        </g>
+        <g id="Hip" transform="matrix(2.72594,0,0,1.64245,36.3112,574.079)">
+            <g transform="matrix(0.715342,0,0,0.711745,-84.0809,183.897)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,623.586L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g transform="matrix(0.715342,0,0,0.283602,-84.0809,353.354)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,623.586L990.028,396.39Z" style="fill:rgb(255,239,205);"/>
+            </g>
+            <g transform="matrix(0.715342,0,0,0.711854,90.2765,183.828)">
+                <path d="M624.418,486.582L746.288,395.854L624.418,623.586L624.418,486.582Z" style="fill:rgb(255,190,103);"/>
+            </g>
+        </g>
+        <g id="Body" transform="matrix(3.57416,0,0,3.25449,-419.139,-653.203)">
+            <g id="Mid4" serif:id="Mid" transform="matrix(0.715342,0,0,0.711745,-84.0809,183.897)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,623.586L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Light4" serif:id="Light" transform="matrix(0.715342,0,0,0.283602,-84.0809,353.354)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,623.586L990.028,396.39Z" style="fill:rgb(255,239,205);"/>
+            </g>
+            <g id="Dark4" serif:id="Dark" transform="matrix(0.715342,0,0,0.711854,90.2765,183.828)">
+                <path d="M624.418,486.582L746.288,395.854L624.418,623.586L624.418,486.582Z" style="fill:rgb(255,190,103);"/>
+            </g>
+        </g>
+        <g id="Head" transform="matrix(3.57416,0,0,3.25449,-419.139,-653.203)">
+            <g id="Mid5" serif:id="Mid" transform="matrix(0.524484,0,0,0.283602,81.614,283.565)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,698.865L990.028,396.39Z" style="fill:rgb(255,171,121);"/>
+            </g>
+            <g id="Dark5" serif:id="Dark" transform="matrix(0.524484,0,0,0.567204,209.452,171.3)">
+                <path d="M624.418,452.787L746.288,395.854L624.418,547.36L624.418,452.787Z" style="fill:rgb(255,190,103);"/>
+            </g>
+            <g id="Light5" serif:id="Light" transform="matrix(0.524484,0,0,0.141801,81.614,339.698)">
+                <path d="M990.028,396.39L746.288,395.854L868.158,623.586L990.028,396.39Z" style="fill:rgb(255,239,205);"/>
+            </g>
+        </g>
+    </g>
+</svg>
