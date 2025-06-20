@@ -35,29 +35,39 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header user={user} onLogout={() => setUser(null)} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/custombot"
-          element={
-            user ? <CustomBot userId={user.id} /> : <Navigate to="/login" />
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            user ? <Profile key={user.id} user={user} fetchUser={fetchUser} /> : <Navigate to="/login" /> //reassign user.id to key property everytime the user gets fetched again will force the component to re-render
-          }
-        />
-        <Route
-          path="/order"
-          element={user ? <Order userId={user.id} /> : <Navigate to="/login" />}
-        />
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <Header user={user} onLogout={() => setUser(null)} />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/custombot"
+              element={
+                user ? <CustomBot userId={user.id} /> : <Navigate to="/login" />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                user ? (
+                  <Profile key={user.id} user={user} fetchUser={fetchUser} />
+                ) : (
+                  <Navigate to="/login" />
+                ) //reassign user.id to key property everytime the user gets fetched again will force the component to re-render
+              }
+            />
+            <Route
+              path="/order"
+              element={
+                user ? <Order userId={user.id} /> : <Navigate to="/login" />
+              }
+            />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

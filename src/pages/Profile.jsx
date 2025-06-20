@@ -47,7 +47,7 @@ const Profile = ({ user, fetchUser }) => {
 
       {/* Profile Information */}
       {user ? (
-        <div className="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg">
+        <div className="bg-gray-700 rounded-xl p-6 mb-8 shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Basic Info</h2>
           <p>
             <strong>Username:</strong> {user.username}
@@ -65,14 +65,14 @@ const Profile = ({ user, fetchUser }) => {
       )}
 
       {/* Edit Username, Email and Password */}
-      <div className="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg">
+      <div className="bg-gray-700 rounded-xl p-6 mb-8 shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Edit Credentials</h2>
         <div className="space-y-4">
           <div>
             <label className="block mb-1 text-sm font-medium">User Name</label>
             <input
               type="username"
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+              className="w-full p-2 bg-gray-600 rounded-md border border-gray-500"
               value={userName || ""}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="Update your username"
@@ -82,7 +82,7 @@ const Profile = ({ user, fetchUser }) => {
             <label className="block mb-1 text-sm font-medium">Email</label>
             <input
               type="email"
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+              className="w-full p-2 bg-gray-600 rounded-md border border-gray-500"
               value={email || ""}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Update your email"
@@ -94,14 +94,14 @@ const Profile = ({ user, fetchUser }) => {
             </label>
             <input
               type="password"
-              className="w-full p-2 bg-gray-700 rounded-md border border-gray-600"
+              className="w-full p-2 bg-gray-600 rounded-md border border-gray-500"
               value={password || ""}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter new password"
             />
           </div>
           <button
-            className={`mt-4 px-4 py-2  hover:bg-blue-700 rounded-md ${
+            className={`mt-4 px-4 py-2  hover:bg-blue-700 rounded-md cursor-pointer ${
               isUserUpdateSuccess ? "animate-bg-green" : " bg-blue-600"
             } `}
             onClick={saveUser}

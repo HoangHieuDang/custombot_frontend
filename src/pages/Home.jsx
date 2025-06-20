@@ -2,9 +2,9 @@ import { NavLink } from "react-router-dom";
 const Home = () => {
   return (
     <>
-      <section className="h-full w-full flex items-center justify-center #222222">
+      <section className="relative h-screen w-full flex items-center justify-center #222222">
         <img
-          className="absolute w-auto h-9/10 left-auto right-auto z-10 pointer-events-none brightness-100"
+          className="absolute left-auto right-auto z-10 pointer-events-none brightness-100"
           src="./src/assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />

@@ -105,7 +105,13 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
             <p>Create new bot</p>
           </button>
         </div>
-        {selectedBot ? <CustomBotPanel selectedBot={selectedBot} refetchCustomBots={refetchCustomBots} /> : null}
+
+        {selectedBot ? (
+          <CustomBotPanel
+            selectedBot={selectedBot}
+            refetchCustomBots={refetchCustomBots}
+          />
+        ) : null}
       </div>
     </>
   );

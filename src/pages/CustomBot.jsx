@@ -31,13 +31,11 @@ const CustomBot = ({ userId }) => {
   }, [userId]);
 
   return (
-    <>
-      <CustomBotList
-        userId={userId}
-        customBots={customBots}
-        refetchCustomBots={refetchCustomBots}
-      />
-    </>
+    <CustomBotList
+      userId={userId}
+      customBots={customBots}
+      refetchCustomBots={refetchCustomBots}
+    />
   );
 };
 
