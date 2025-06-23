@@ -1,6 +1,9 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import Orders from "../api/ordersApi";
+
 
 const OrderStatusStepper = ({ status }) => {
+  //"pending", "paid", "shipped", "cancelled"
   const steps = ["Order Received", "In Production", "Shipping", "Arrived", "Received"];
   const currentStepIndex = steps.indexOf(status);
 
@@ -22,6 +25,23 @@ const OrderStatusStepper = ({ status }) => {
 
 const Order = ({ userId }) => {
   // Placeholder mock data
+  const[ordersObj, setOrdersObj] = useState(null)
+
+  // useEffect(()=>{
+  //   const fetchOrder = async () => {
+  //     const orderApi = new Orders()
+  //     const orderApiRes = await orderApi.getOrder({user_id:userId})
+  //     if (orderApiRes.ok){
+  //       setOrdersObj(orderApiRes)
+
+  //     }
+  //   }
+  //  if (userId){fetchOrder()}
+    
+  // },[userId])
+ 
+  
+
   const ongoingOrders = [
     {
       orderId: "CB-00124",

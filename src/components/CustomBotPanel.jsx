@@ -4,8 +4,9 @@ import { OrbitControls } from "@react-three/drei";
 import { DynamicPart } from "./DynamicPart";
 import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
+import Orders from "../api/ordersApi";
 
-const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
+const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
   const basePath = "./src/assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
@@ -35,6 +36,8 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
   const [currentParts, setCurrentParts] = useState({});
   //isCustomBotSaved tells whether the custombot has been saved after changes have been done
   const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
+  //isCustomBotOrdered tells whether the custombot has been ordered
+  const [isCustomBotOrdered, setIsCustomBotOrdered] = useState(false);
 
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
@@ -357,6 +360,31 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
     setIsCustomBotSaved(false);
     setEditedName(selectedBot.name);
   }, [selectedBot]);
+
+  const handleOrder = async () => {
+    const orderApi = new Orders();
+    const result = await orderApi.createOrder({
+      user_id: userId, // should be passed to the panel
+      custom_robot_id: selectedBot.id,
+      quantity: 1,
+      status: "pending",
+      payment_method: null,
+      shipping_address: null,
+      shipping_date: null,
+    });
+
+    if (result === true) {
+      console.log("Bot added to cart!");
+      setIsCustomBotOrdered(true);
+      //since the status of custombot will be changed to "ordered", 
+      //ordered custombot also has to be refetched to sync the data across backend and frontend
+      refetchCustomBots();
+      
+    } else {
+      console.warn("Failed to add bot to cart.");
+      setIsCustomBotOrdered(false);
+    }
+  };
   return (
     <>
       {/* Panel for settings options and customBot Name edit */}
@@ -371,8 +399,12 @@ const CustomBotPanel = ({ selectedBot, refetchCustomBots }) => {
             >
               {isCustomBotSaved ? "Saved" : "Save customization"}
             </button>
-            <button className="rounded-2xl bg-gray-700 p-3 m-3 cursor-pointer hover:bg-gray-600">
-              Order this bot
+
+            <button
+              onClick={handleOrder}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${isCustomBotOrdered?"animate-bg-green":"bg-gray-700"}`}
+            >
+              {isCustomBotOrdered ? "Bot ordered" : "Order this bot"}
             </button>
           </div>
         ) : (

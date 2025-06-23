@@ -14,17 +14,16 @@ export default class Orders {
     const allowedStatus = ["pending", "paid", "shipped", "cancelled"];
 
     // Basic client-side validation
-    if (
-      !user_id ||
-      !custom_robot_id ||
-      !quantity ||
-      !status ||
-      !payment_method ||
-      !shipping_address ||
-      !shipping_date
-    ) {
-      console.error("Missing required fields");
+    if (!user_id || !custom_robot_id || !quantity || !status) {
+      console.error("Missing required base fields");
       return;
+    }
+
+    if (status === "paid") {
+      if (!payment_method || !shipping_address || !shipping_date) {
+        console.error("Missing payment or shipping info for 'paid' order");
+        return;
+      }
     }
 
     if (!allowedStatus.includes(status)) {
@@ -108,7 +107,7 @@ export default class Orders {
 
   //Update
   async updateOrder(orderData) {
-    //orderData is an object with keys 
+    //orderData is an object with keys
     // which represents the to be changed fields
     const baseUrl = `${BASE_URL}/orders`;
 
@@ -141,9 +140,9 @@ export default class Orders {
     const url = `${BASE_URL}/orders/${orderId}`;
     try {
       const response = await fetch(url, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-  
+
       if (response.status === 204) {
         console.log(`Order ${orderId} deleted successfully.`);
         return true;

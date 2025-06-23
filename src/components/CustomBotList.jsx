@@ -86,7 +86,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                 {bot.status === "in_progress" ? (
                   <img
                     className="w-6 h-6 justify-self-end mr-2 mt-auto mb-auto"
-                    src="./src/assets/images/trolley.png"
+                    src="./src/assets/ui_components/trolley.png"
                     alt="trolley_icon"
                   />
                 ) : null}
@@ -108,6 +108,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
 
         {selectedBot ? (
           <CustomBotPanel
+            userId={userId}
             selectedBot={selectedBot}
             refetchCustomBots={refetchCustomBots}
           />
