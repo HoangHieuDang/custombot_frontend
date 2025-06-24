@@ -71,7 +71,7 @@ export default class Orders {
 
   async getOrder(searchParams) {
     //searchParams is an object with keys used as search criterias
-    const baseUrl = `${BASE_URL}/orders`;
+    const baseUrl = `${BASE_URL}/orders/`;
     // Prepare the URL with query parameters
     let url = new URL(baseUrl, window.location.origin);
 

@@ -9,8 +9,8 @@ export default function Header({ user, onLogout }) {
 
   function liCssStyling(isActive) {
     return isActive
-      ? "text-lg text-orange-200 font-light"
-      : "font-extralight text-white hover:text-white-200 hover:rounded-md";
+      ? "transition-all duration-70 text-lg text-orange-200 font-light"
+      : "transition-all duration-70 font-extralight text-white hover:text-white-200 hover:rounded-md";
   }
 
   const liClassName = "rounded-lg px-2 py-2 ml-5 mr-5 hover:bg-gray-700";
@@ -84,8 +84,8 @@ export default function Header({ user, onLogout }) {
           </li>
         </ul>
 
-        <NavLink to="/cart" end className="flex items-center">
-          <img src="/src/assets/ui_components/trolley.png" className="w-6.5 h-6 flex-shrink-0" />
+        <NavLink to="/cart" end className="flex items-center justify-center">
+          <img src="/src/assets/ui_components/trolley.png" className="items-center justify-center w-6.5 h-6 flex-shrink-0 hover:brightness-75" />
         </NavLink>
 
         {user ? (
