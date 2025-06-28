@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { BASE_URL } from "./api/apiConnConfig";
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
 import CustomBot from "./pages/CustomBot";
@@ -10,8 +11,6 @@ import Login from "./pages/Login";
 import httpClient from "./api/httpClient";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
-import PaymentForm from "./pages/PaymentForm";
-import { BASE_URL } from "./api/apiConnConfig";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -68,8 +67,12 @@ function App() {
             />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/cart" element={<Cart userId={user.id} />} />
-            <Route path="/payment" element={<PaymentForm userId={user.id} />} />
+            <Route
+              path="/cart"
+              element={
+                user ? <Cart userId={user.id} /> : <Navigate to="/login" />
+              }
+            />
           </Routes>
         </main>
         <Footer />

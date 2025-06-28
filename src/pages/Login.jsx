@@ -26,7 +26,7 @@ function Login({ setUser }) {
   };
 
   return (
-    <section className="relative h-full w-full flex items-center justify-center #222222">
+    <section className="relative h-screen w-full flex items-center justify-center #222222">
       <img
         className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30"
         src="./src/assets/images/Custombot_Banner_Transparent.png"

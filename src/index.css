@@ -1,100 +1,104 @@
 @import "tailwindcss";
 @tailwind utilities;
-
 html {
-  width: 100vw;
-  height: 100vh;
-  background-color: #222222;
-  color: white;
+    width: 100vw;
+    height: 100vh;
+    background-color: #222222;
+    color: white;
 }
 
 #root {
-  width: 100vw;
-  height: 100vh;
+    width: 100vw;
+    height: 100vh;
 }
 
 @theme {
-  --animate-fade-in-scale: fade-in-scale 0.8s ease-out;
-  @keyframes fade-in-scale {
-    0% {
-      opacity: 0;
-      transform: scale(0.95);
+    --animate-fade-in-scale: fade-in-scale 0.8s ease-out;
+    @keyframes fade-in-scale {
+        0% {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
+    --animate-fade-in-color: fade-in-color 1s ease-out;
+    @keyframes fade-in-color {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
     }
-  }
-
-  --animate-marquee-right: marquee-right 10s linear infinite;
-  @keyframes marquee-right {
-    0% {
-      transform: translateX(-100%);
-      opacity: 0;
+    --animate-marquee-right: marquee-right 10s linear infinite;
+    @keyframes marquee-right {
+        0% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        25% {
+            opacity: 0.1;
+        }
+        75% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(100%);
+        }
     }
-    25% {
-      opacity: 0.1;
+    --animate-marquee-left: marquee-left 10s linear infinite;
+    @keyframes marquee-left {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        25% {
+            opacity: 0.1;
+        }
+        75% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
     }
-    75% {
-      opacity: 0.5;
+    --animate-background-color: bg-green 2s linear;
+    @keyframes bg-green {
+        0% {
+            background-color: gray;
+            opacity: 0.2;
+        }
+        100% {
+            background-color: green;
+            opacity: 1;
+        }
     }
-    100% {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-  }
-
-  --animate-marquee-left: marquee-left 10s linear infinite;
-  @keyframes marquee-left {
-    0% {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    25% {
-      opacity: 0.1;
-    }
-    75% {
-      opacity: 0.5;
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-100%);
-    }
-  }
-
-  --animate-background-color: bg-green 2s linear;
-  @keyframes bg-green {
-    0% {
-      background-color: gray;
-      opacity: 0.2;
-    }
-    100% {
-      background-color: green;
-      opacity: 1;
-    }
-  }
 }
 
 .animate-bg-green {
-  animation: bg-green 2s forwards;
+    animation: bg-green 2s forwards;
 }
 
 .marquee-wrapper {
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: column;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
 }
 
 .marquee-content-right {
-  display: inline-block;
-  max-width: 100%;
-  animation: marquee-right 15s linear infinite;
+    display: inline-block;
+    max-width: 100%;
+    animation: marquee-right 15s linear infinite;
 }
 
 .marquee-content-left {
-  display: inline-block;
-  max-width: 100%;
-  animation: marquee-left 15s linear infinite;
+    display: inline-block;
+    max-width: 100%;
+    animation: marquee-left 15s linear infinite;
 }

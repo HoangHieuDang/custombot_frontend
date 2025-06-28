@@ -68,10 +68,10 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
               <div
                 onClick={() => handleChosenBot(bot)}
                 key={`div_bot_list_${bot.name}`}
-                className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-3 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
+                className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-2 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
                 <p className="m-2">{`${bot.name}`}</p>
-                <p className="m-2 justify-self-start">
+                <p className="m-2 justify-self-end">
                   status:{" "}
                   <strong
                     className={
@@ -83,13 +83,6 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                     {bot.status}
                   </strong>
                 </p>
-                {bot.status === "in_progress" ? (
-                  <img
-                    className="w-6 h-6 justify-self-end mr-2 mt-auto mb-auto"
-                    src="./src/assets/ui_components/trolley.png"
-                    alt="trolley_icon"
-                  />
-                ) : null}
               </div>
             ))
           )}
