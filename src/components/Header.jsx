@@ -38,11 +38,11 @@ export default function Header({ user, onLogout }) {
   return (
     <header>
       <nav className="inline-flex flex-row w-full bg-slate-800 items-center">
-        <NavLink to="/" end>
+        <NavLink to="/" end className="flex items-center flex-shrink-0">
           <img
-            className="flex ml-5 w-auto h-10 p-1 justify-self mt-auto mb-auto cursor-pointer flex-shrink-0"
             src="/src/assets/images/PLAplay_logo.png"
             alt="PLAplay logo"
+            className="h-10 w-auto max-w-[150px] object-contain ml-5"
           />
         </NavLink>
         <ul className="flex h-16 p-5 items-center justify-between">
@@ -85,7 +85,10 @@ export default function Header({ user, onLogout }) {
         </ul>
 
         <NavLink to="/cart" end className="flex items-center justify-center">
-          <img src="/src/assets/ui_components/trolley.png" className="items-center justify-center w-6.5 h-6 flex-shrink-0 hover:brightness-75" />
+          <img
+            src="/src/assets/ui_components/trolley.png"
+            className="items-center justify-center w-6.5 h-6 flex-shrink-0 hover:brightness-75"
+          />
         </NavLink>
 
         {user ? (
