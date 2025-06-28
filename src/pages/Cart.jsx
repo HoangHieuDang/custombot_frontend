@@ -11,16 +11,18 @@ export default function Cart({ userId }) {
   const [paymentMethod, setPaymentMethod] = useState("credit_card");
 
   // Step 1: Fetch pending orders
+  // fetchCart get order infos and set CartOrders state
+  const fetchCart = async () => {
+    const api = new Orders();
+    const data = await api.getOrder({ user_id: userId, status: "pending" });
+    if (data && Array.isArray(data)) {
+      setCartOrders(data);
+    }else{
+      setCartOrders([]);
+    }
+  };
+
   useEffect(() => {
-    const fetchCart = async () => {
-      const api = new Orders();
-      const data = await api.getOrder({ user_id: userId, status: "pending" });
-
-      if (data && Array.isArray(data)) {
-        setCartOrders(data);
-      }
-    };
-
     if (userId) fetchCart();
   }, [userId]);
 
@@ -51,25 +53,25 @@ export default function Cart({ userId }) {
       alert("Please enter a shipping address before confirming payment.");
       return; // Stop the function if address is empty
     }
-  
+
     const api = new Orders();
     for (let order of cartOrders) {
       await api.updateOrder({
         id: order.id,
         status: "paid",
+        quantity: order.quantity,
         shipping_address: shippingAddress,
         payment_method: paymentMethod,
         shipping_date: new Date().toISOString().slice(0, 10),
       });
     }
-  
+
     alert("Payment successful!");
     setShowPaymentForm(false);
     // clear form and refresh cart
     setShippingAddress("");
-    setCartOrders([]); // or refresh from backend
+    fetchCart(); // refresh from backend
   };
-  
 
   //handling order quantity change
   const orderQuantityChange = (order_id, diff) => {
@@ -102,9 +104,9 @@ export default function Cart({ userId }) {
     <>
       <div className="flex flex-col lg:flex-col w-full h-screen p-6 gap-6 justify-center">
         <div className="text-white w-full">
-          <h1 className="text-3xl font-light mb-4 mr-5 ml-5">Your Cart</h1>
+          <h1 className="text-3xl font-light mb-4 mr-5 ml-5 text-center">Your Cart</h1>
           {cartOrders.length === 0 ? (
-            <p>Your cart is empty.</p>
+            <p className="text-center">Your cart is empty</p>
           ) : (
             <div
               className={`transition-all duration-500 w-full bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
