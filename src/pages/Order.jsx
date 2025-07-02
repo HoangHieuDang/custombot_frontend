@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import Orders from "../api/ordersApi";
+import Bots from "../api/customBotsApi";
 
 const OrderStatusStepper = ({ status }) => {
-  //"paid", "shipping", "production", "cancelled"
-  const steps = ["paid", "production", "shipping"];
+  //"paid", "production", "shipping", "received"
+  const steps = ["paid", "production", "shipping", "received"];
   const currentStepIndex = steps.indexOf(status);
 
   return (
@@ -29,85 +30,121 @@ const OrderStatusStepper = ({ status }) => {
     </div>
   );
 };
-
+// Order main component
 const Order = ({ userId }) => {
-  // Placeholder mock data
-  const [ordersObj, setOrdersObj] = useState(null);
+  const [ordersList, setOrdersList] = useState(null);
+  const [customBotMap, setCustomBotMap] = useState({});
 
-  const ongoingOrders = [
-    {
-      orderId: "CB-00124",
-      botName: "BlazeDrift",
-      status: "paid",
-      orderDate: "2025-06-06",
-    },
-  ];
+  const fetchOrder = async () => {
+    const api = new Orders();
+    const data = await api.getOrder({ user_id: userId });
+    setOrdersList(Array.isArray(data) ? data : []);
+  };
+  //fetch all orders
+  useEffect(() => {
+    if (userId) fetchOrder();
+  }, [userId]);
 
-  const pastOrders = [
-    {
-      orderId: "CB-00098",
-      botName: "Blitz Phantom",
-      status: "shipped",
-      orderDate: "2025-05-14",
-    },
-  ];
+  //fetch custombot infos after ordersList is loaded
+  useEffect(() => {
+    const fetchCustomBots = async () => {
+      const apiBots = new Bots();
+      const uniqueBotIds = [...new Set(ordersList.map((o) => o.custom_robot_id))];
+      const botMap = {};
+
+      for (let botId of uniqueBotIds) {
+        const res = await apiBots.getCustomBot({ id: botId });
+        if (res && res.length === 1) {
+          botMap[botId] = res[0];
+        }
+      }
+
+      setCustomBotMap(botMap);
+    };
+
+    if (ordersList && ordersList.length > 0) {
+      fetchCustomBots();
+      console.log("customBotMap: ", customBotMap);
+    }
+  }, [ordersList]);
+
+  const ongoingStatuses = ["paid", "production", "shipping"];
+  const pastStatuses = ["received", "cancelled"];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-gray-900">
+    <div className="p-6 max-w-5xl mx-auto bg-gray-900 text-white">
       <h1 className="text-4xl font-light mb-6">Your Orders</h1>
 
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-4">Ongoing Orders</h2>
         <div className="grid gap-6">
-          {ongoingOrders.map((order) => (
-            <div
-              key={order.orderId}
-              className="border rounded-2xl p-5 bg-gray-800 shadow-md"
-            >
-              <div className="flex justify-between mb-2">
-                <div>
-                  <p className="text-lg font-medium">{order.botName}</p>
-                  <p className="text-sm text-gray-500">
-                    Order ID: {order.orderId}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    Date: {order.orderDate}
-                  </p>
+          {ordersList && ordersList.length > 0 ? (
+            ordersList
+              .filter((order) => ongoingStatuses.includes(order.status))
+              .map((order) => (
+                <div
+                  key={order.orderId}
+                  className="border rounded-2xl p-5 bg-gray-800 shadow-md"
+                >
+                  <div className="flex justify-between mb-2">
+                    <div>
+                      <p className="text-lg font-medium">
+                        {customBotMap[order.custom_robot_id]?.name ||
+                          "Can't load Bot Name"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Order ID: {order.id}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Date: {order.created_at}
+                      </p>
+                    </div>
+                    <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
+                      {order.status}
+                    </span>
+                  </div>
+                  <OrderStatusStepper status={order.status} />
                 </div>
-                <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
-                  {order.status}
-                </span>
-              </div>
-              <OrderStatusStepper status={order.status} />
-            </div>
-          ))}
+              ))
+          ) : (
+            <p>No ongoing orders</p>
+          )}
         </div>
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold mb-4">Past Orders</h2>
         <div className="grid gap-6">
-          {pastOrders.map((order) => (
-            <div
-              key={order.orderId}
-              className="border rounded-2xl p-5 bg-gray-500"
-            >
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-lg font-medium">{order.botName}</p>
-                  <p className="text-sm text-gray-500">
-                    Order ID: {order.orderId}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    Date: {order.orderDate}
-                  </p>
+          {ordersList && ordersList.length > 0 ? (
+            ordersList
+              .filter((order) => pastStatuses.includes(order.status))
+              .map((order) => (
+                <div
+                  key={order.orderId}
+                  className="border rounded-2xl p-5 bg-gray-700"
+                >
+                  <div className="flex justify-between">
+                    <div>
+                      <p className="text-lg font-medium">
+                        {customBotMap[order.custom_robot_id]?.name ||
+                          "Can't load Bot Name"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Order ID: {order.id}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Date: {order.created_at}
+                      </p>
+                    </div>
+                    <span className="text-xs text-green-600 self-start bg-green-100 px-3 py-1 rounded-full">
+                      {order.status}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-xs text-green-600 self-start bg-green-100 px-3 py-1 rounded-full">
-                  {order.status}
-                </span>
-              </div>
-            </div>
-          ))}
+              ))
+          ) : (
+            <p>No past orders</p>
+          )}
         </div>
       </section>
     </div>
