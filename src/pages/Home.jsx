@@ -3,22 +3,29 @@ const Home = () => {
   return (
     <>
       <section className="relative h-screen w-full flex items-center justify-center #222222">
+        {/* image-banner-for-desktop */}
         <img
-          className="absolute left-auto right-auto z-10 pointer-events-none brightness-100"
+          className="absolute left-auto right-auto z-10 pointer-events-none hidden md:block"
           src="./src/assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />
+        {/* image-banner-for-mobile */}
+        <img
+          className="absolute  left-auto right-auto z-10 pointer-events-none w-full sm:hidden"
+          src="./src/assets/images/Custombot_Banner_Transparent_mobile.png"
+          alt="a banner picture of custom bots"
+        />
         <div className="marquee-wrapper h-1/1 w-1/1 flex flex-row items-center justify-evenly">
-          <p className="z-0 text-9xl text-amber-100 font-extralight  marquee-content-right">
+          <p className="z-0 text-5xl md:text-9xl text-amber-100 font-extralight  marquee-content-right">
             Custom your own robot
           </p>
-          <p className="z-0 text-6xl text-amber-50 font-extralight  marquee-content-left">
+          <p className="z-0 text-3xl md:text-6xl text-amber-50 font-extralight  marquee-content-left">
             Combine the parts yourself
           </p>
-          <p className="z-0 text-4xl text-amber-200 font-extralight  marquee-content-right">
+          <p className="z-0 text-2xl md:text-4xl text-amber-200 font-extralight  marquee-content-right">
             Make your dream robot come true
           </p>
-          <p className="z-0 text-8xl text-amber-50 font-extralight  marquee-content-right">
+          <p className="z-0 text-6xl md:text-8xl text-amber-50 font-extralight  marquee-content-right">
             It is never too late to have fun
           </p>
         </div>
@@ -26,7 +33,7 @@ const Home = () => {
 
       <section className="h-full w-full flex flex-col items-center justify-center #222222">
         <div className="intro p-6 max-w-4xl mx-auto items-center justify-center">
-          <h2 className="text-4xl font-extralight text-amber-200 text-center pt-5 mb-15">
+          <h2 className="text-2xl md:text-4xl font-extralight text-amber-200 text-center pt-5 mb-15">
             Build Your Dream Mecha Model Kit
           </h2>
           <p className="font-extralight text-xl text-amber-100">
@@ -37,19 +44,19 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="quick-start-guide p-6 max-w-5xl mx-auto">
-          <h2 className="text-4xl font-extralight text-amber-200 text-center mb-15">
+        <div className="quick-start-guide p-6 max-w-full md:max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-4xl font-extralight text-amber-200 text-center mb-15">
             How It Works
           </h2>
-          <ul className="flex items-start justify-center flex-row list-inside space-y-2 text-left text-base leading-relaxed font-extralight text-amber-100">
-            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5 wrap-break-word ">
+          <ul className="flex items-start justify-center flex-col md:flex-row list-inside space-y-2 text-left text-base leading-relaxed font-extralight text-amber-100">
+            <li className="ml-2 mr-2 sm:w-[90%] md:w-[30%] h-100 border border-amber-200 rounded p-5 wrap-break-word ">
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
                   src="./src/assets/images/customize.png"
                   alt="customize-icon"
                 ></img>
-                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">
                   <strong>Pick Your Parts</strong>
                 </h3>
                 <br />
@@ -61,14 +68,14 @@ const Home = () => {
                 </p>
               </div>
             </li>
-            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5 wrap-break-word ">
+            <li className="ml-2 mr-2 sm:w-[90%] md:w-[30%] h-100 border border-amber-200 rounded p-5 wrap-break-word ">
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
                   src="./src/assets/images/order.png"
                   alt="customize-icon"
                 ></img>
-                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">
                   <strong>Save or Order</strong>
                 </h3>
                 <br />
@@ -79,14 +86,14 @@ const Home = () => {
                 </p>
               </div>
             </li>
-            <li className="ml-2 mr-2 w-2xl h-100 border border-amber-200 rounded p-5  wrap-break-word ">
+            <li className="ml-2 mr-2 sm:w-[90%] md:w-[30%] h-100 border border-amber-200 rounded p-5  wrap-break-word">
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
                   src="./src/assets/images/assemble.png"
                   alt="customize-icon"
                 ></img>
-                <h3 className="text-amber-200 text-2xl font-extralight text-center">
+                <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">
                   <strong>Assemble & Display</strong>
                 </h3>
                 <br />
@@ -98,7 +105,7 @@ const Home = () => {
             </li>
           </ul>
           <div className="flex justify-center">
-            <button className="font-extralight bg-gray-800 border-1 rounded-2xl p-2 mt-10 w-1/5">
+            <button className="font-extralight bg-gray-800 border-1 rounded-2xl p-2 mt-10 sm:max-w-1 md:max-w-1/5 ">
               <NavLink to="/custombot">
                 <strong className="text-amber-200">LET'S BUILD!</strong>
               </NavLink>

@@ -1,16 +1,15 @@
 @import "tailwindcss";
 @tailwind utilities;
 html {
-    width: 100vw;
-    height: 100vh;
     background-color: #222222;
     color: white;
 }
 
-#root {
-    width: 100vw;
-    height: 100vh;
-}
+
+/* #root {
+  width: 100vw;
+  height: 100vh;
+} */
 
 @theme {
     --animate-fade-in-scale: fade-in-scale 0.8s ease-out;
@@ -22,6 +21,17 @@ html {
         100% {
             opacity: 1;
             transform: scale(1);
+        }
+    }
+    --animate-fade-out-scale: fade-out-scale 0.8s ease-in;
+    @keyframes fade-out-scale {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.95);
         }
     }
     --animate-fade-in-color: fade-in-color 1s ease-out;

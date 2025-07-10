@@ -17,8 +17,11 @@ const CustomBot = ({ userId }) => {
 
   const refetchCustomBots = async () => {
     const apiBots = new Bots();
+    console.log("userId: ", userId);
     const bots = await apiBots.getCustomBot({ user_id: userId });
+    console.log("bots: ", bots);
     if (bots) {
+      console.log("bots: ", bots);
       setCustomBots(bots);
     }
   };
