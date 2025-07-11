@@ -43,6 +43,18 @@ html {
             opacity: 1;
         }
     }
+    --animate-brightness-in-out: brightness-in-out 5s linear infinite;
+    @keyframes brightness-in-out {
+        0% {
+            opacity: 0.1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 0.1;
+        }
+    }
     --animate-marquee-right: marquee-right 10s linear infinite;
     @keyframes marquee-right {
         0% {

@@ -21,7 +21,7 @@ export default function Footer() {
             Github
           </a>
           <a
-            href="/contact"
+            href="mailto:hoanghieu.dang@gmail.com"
             className="hover:text-orange-400 transition duration-200 text-sm"
           >
             Contact

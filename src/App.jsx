@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import httpClient from "./api/httpClient";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
+import About from "./pages/About";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -67,6 +68,7 @@ function App() {
             />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
             <Route
               path="/cart"
               element={
