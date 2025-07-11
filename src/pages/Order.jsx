@@ -49,7 +49,9 @@ const Order = ({ userId }) => {
   useEffect(() => {
     const fetchCustomBots = async () => {
       const apiBots = new Bots();
-      const uniqueBotIds = [...new Set(ordersList.map((o) => o.custom_robot_id))];
+      const uniqueBotIds = [
+        ...new Set(ordersList.map((o) => o.custom_robot_id)),
+      ];
       const botMap = {};
 
       for (let botId of uniqueBotIds) {
@@ -92,11 +94,17 @@ const Order = ({ userId }) => {
                         {customBotMap[order.custom_robot_id]?.name ||
                           "Can't load Bot Name"}
                       </p>
+                      <p className="text-sm text-gray-400">
+                        Date: {order.created_at}
+                      </p>
                       <p className="text-sm text-gray-500">
                         Order ID: {order.id}
                       </p>
-                      <p className="text-sm text-gray-400">
-                        Date: {order.created_at}
+                      <p className="text-sm text-gray-500">
+                        Quantity: {order.quantity}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Total price: {order.total_price}
                       </p>
                     </div>
                     <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
