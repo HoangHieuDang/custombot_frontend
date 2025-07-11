@@ -436,7 +436,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
             </Fragment>
           ) : (
             <>
-              <h2 className="text-center font-extralight m-4 text-amber-300 text-2xl">
+              <h2 className="text-center font-extralight m-2 md:m-4 text-amber-300 text-xl md:text-2xl">
                 Custombot: {editedName}
               </h2>
               <button onClick={editNameHandling}>
@@ -450,9 +450,9 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
           )}
         </div>
 
-        <div className="flex gap-6 ml-5 mr-5 items-center justify-center">
+        <div className="flex flex-col md:flex-row gap-6 ml-5 mr-5 items-center justify-center">
           {/* 3D Canvas */}
-          <div className="transition-all duration-100 w-3/7 h-[700px] border rounded-md overflow-hidden mb-5 hover:border-2 hover:border-amber-300">
+          <div className="transition-all duration-100 w-full md:w-3/7 h-[400px] md:h-[700px] border rounded-md overflow-hidden mb-5 hover:border-2 hover:border-amber-300">
             <Canvas
               style={{ backgroundColor: "#BE5B55" }}
               camera={{ position: [0, 0, 15], fov: 100 }}
@@ -494,7 +494,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
           </div>
 
           {/* Customize Option Panel */}
-          <div className="w-2/5 h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5 hover:border-amber-300 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="w-full md:w-2/5 h-[400px] md:h-[700px] overflow-y-auto p-4 border rounded-md bg-gray-800 shadow-inner items-center text-white mb-5 hover:border-amber-300 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full">
             <h2 className="text-2xl mb-4 font-extralight">Customize Parts</h2>
             {Object.entries(currentParts).map(([typeKey, partEntry]) => {
               if (typeKey === "skeleton") return null;

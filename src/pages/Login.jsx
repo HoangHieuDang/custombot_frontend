@@ -27,9 +27,16 @@ function Login({ setUser }) {
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center #222222">
+      {/* image-banner-for-background */}
       <img
-        className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30"
+        className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30 hidden md:block"
         src="./src/assets/images/Custombot_Banner_Transparent.png"
+        alt="a banner picture of custom bots"
+      />
+      {/* image-banner-for-background */}
+      <img
+        className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30 md:hidden"
+        src="./src/assets/images/Custombot_Banner_Transparent_mobile.png"
         alt="a banner picture of custom bots"
       />
       <div className="absolute marquee-wrapper h-1/1 w-1/1 z-3 flex flex-row items-center justify-evenly">
@@ -46,24 +53,24 @@ function Login({ setUser }) {
           It is never too late to have fun
         </p>
       </div>
-      <div className="ml-auto mr-auto w-6/12 p-4 z-10 bg-gray-700 flex flex-col items-center justify-center rounded-2xl">
+      <div className="ml-auto mr-auto w-9/12 md:w-6/12 p-4 z-10 bg-gray-700 flex flex-col items-center justify-center rounded-2xl">
         <h1 className="text-2xl font-extralight mb-4 text-amber-300">Login</h1>
         <input
-          className="border p-2 mb-2 w-3/10"
+          className="border p-2 mb-2 w-full md:w-3/10"
           type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          className="border p-2 mb-2 w-3/10"
+          className="border p-2 mb-2 w-full md:w-3/10"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          className="bg-blue-500 text-white px-4 py-2 w-3/10 mb-4 rounded cursor-pointer border-1 border-blue-500 hover:border-amber-200"
+          className="bg-blue-500 text-white text-sm font-extralight px-4 py-2 w-3/10 mb-4 rounded cursor-pointer border-1 border-blue-500 hover:border-amber-200"
           onClick={loginUser}
         >
           Log in
