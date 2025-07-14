@@ -7,13 +7,13 @@ const About = () => {
       {/* image-banner-for-background */}
       <img
         className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none animate-brightness-in-out hidden md:block"
-        src="./src/assets/images/Custombot_Banner_Transparent.png"
+        src="./assets/images/Custombot_Banner_Transparent.png"
         alt="a banner picture of custom bots"
       />
       {/* image-banner-for-background */}
       <img
         className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none animate-brightness-in-out md:hidden"
-        src="./src/assets/images/Custombot_Banner_Transparent_mobile.png"
+        src="./assets/images/Custombot_Banner_Transparent_mobile.png"
         alt="a banner picture of custom bots"
       />
       <div className="max-w-3xl text-center z-10">

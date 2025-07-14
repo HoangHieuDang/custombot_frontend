@@ -138,7 +138,7 @@ export default function Cart({ userId }) {
                             orderQuantityChange(order.id, -1);
                           }}
                           className="h-4 w-4 cursor-pointer hover:brightness-75 justify-self-end"
-                          src="./src/assets/ui_components/minus_quant.png"
+                          src="./assets/ui_components/minus_quant.png"
                           alt="minus-icon"
                         />
                         <p className="text-sm text-gray-400">
@@ -149,7 +149,7 @@ export default function Cart({ userId }) {
                             orderQuantityChange(order.id, 1);
                           }}
                           className="h-4 w-4 cursor-pointer hover:brightness-75 justify-self-start"
-                          src="./src/assets/ui_components/add_quant.png"
+                          src="./assets/ui_components/add_quant.png"
                           alt="minus-icon"
                         />
                       </div>

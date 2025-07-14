@@ -82,7 +82,7 @@ export default function Header({ user, onLogout }) {
         {/* Logo */}
         <NavLink to="/" end className="flex items-center flex-shrink-0">
           <img
-            src="/src/assets/images/PLAplay_logo.png"
+            src="/assets/images/PLAplay_Logo.png"
             alt="PLAplay logo"
             className="h-10 w-auto object-contain"
           />
@@ -99,7 +99,7 @@ export default function Header({ user, onLogout }) {
             className="flex items-center justify-center mr-3"
           >
             <img
-              src="/src/assets/ui_components/trolley.png"
+              src="/assets/ui_components/trolley.png"
               className="w-6.5 h-6 hover:brightness-75"
             />
           </NavLink>
@@ -112,7 +112,7 @@ export default function Header({ user, onLogout }) {
               <button onClick={() => setShowMenu(!showMenu)}>
                 <img
                   className="w-6 h-6 cursor-pointer hover:brightness-75"
-                  src="./src/assets/ui_components/user.png"
+                  src="./assets/ui_components/user.png"
                   alt="user-icon"
                 />
               </button>
@@ -230,7 +230,7 @@ export default function Header({ user, onLogout }) {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <img
-                      src="/src/assets/ui_components/trolley.png"
+                      src="/assets/ui_components/trolley.png"
                       className="w-6.5 h-6 hover:brightness-75 ml-auto mr-auto"
                     />
                   </NavLink>

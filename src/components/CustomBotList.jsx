@@ -92,7 +92,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
           >
             <img
               className="w-6 h-6"
-              src="./src/assets/ui_components/add.png"
+              src="./assets/ui_components/add.png"
               alt="add_ui_icon"
             />
             <p>Create new bot</p>

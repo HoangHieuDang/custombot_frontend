@@ -7,7 +7,7 @@ import Bots from "../api/customBotsApi";
 import Orders from "../api/ordersApi";
 
 const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
-  const basePath = "./src/assets/3d_assets/";
+  const basePath = "./assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
   // List of all possible robot part types
@@ -441,7 +441,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
               </h2>
               <button onClick={editNameHandling}>
                 <img
-                  src={"./src/assets/ui_components/edit.png"}
+                  src={"./assets/ui_components/edit.png"}
                   alt="edit-icon"
                   className="w-6 h-6 ml-2 hover:opacity-75"
                 />
@@ -524,7 +524,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                           >
                             <img
                               className="transition-all duration-100 h-5 hover:brightness-50"
-                              src="./src/assets/ui_components/left-arrow.png"
+                              src="./assets/ui_components/left-arrow.png"
                             />
                           </button>
                         ) : null}
@@ -537,7 +537,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                           >
                             <img
                               className="transition-all duration-100 h-5 hover:brightness-50"
-                              src="./src/assets/ui_components/right-arrow.png"
+                              src="./assets/ui_components/right-arrow.png"
                             />
                           </button>
                         ) : null}
@@ -552,7 +552,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                         <button onClick={() => switchPart(typeKey, -1)}>
                           <img
                             className="transition-all duration-100 h-5 hover:brightness-50"
-                            src="./src/assets/ui_components/left-arrow.png"
+                            src="./assets/ui_components/left-arrow.png"
                           />
                         </button>
                       ) : null}
@@ -563,7 +563,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                         <button onClick={() => switchPart(typeKey, 1)}>
                           <img
                             className="transition-all duration-100 h-5 hover:brightness-50"
-                            src="./src/assets/ui_components/right-arrow.png"
+                            src="./assets/ui_components/right-arrow.png"
                           />
                         </button>
                       ) : null}

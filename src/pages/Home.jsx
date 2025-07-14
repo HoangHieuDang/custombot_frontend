@@ -6,13 +6,13 @@ const Home = () => {
         {/* image-banner-for-desktop */}
         <img
           className="absolute left-auto right-auto z-10 pointer-events-none hidden md:block"
-          src="./src/assets/images/Custombot_Banner_Transparent.png"
+          src="./assets/images/Custombot_Banner_Transparent.png"
           alt="a banner picture of custom bots"
         />
         {/* image-banner-for-mobile */}
         <img
           className="absolute  left-auto right-auto z-10 pointer-events-none w-full sm:hidden"
-          src="./src/assets/images/Custombot_Banner_Transparent_mobile.png"
+          src="./assets/images/Custombot_Banner_Transparent_mobile.png"
           alt="a banner picture of custom bots"
         />
         <div className="marquee-wrapper h-1/1 w-1/1 flex flex-row items-center justify-evenly">
@@ -53,7 +53,7 @@ const Home = () => {
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
-                  src="./src/assets/images/customize.png"
+                  src="./assets/images/customize.png"
                   alt="customize-icon"
                 ></img>
                 <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">
@@ -72,7 +72,7 @@ const Home = () => {
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
-                  src="./src/assets/images/order.png"
+                  src="./assets/images/order.png"
                   alt="customize-icon"
                 ></img>
                 <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">
@@ -90,7 +90,7 @@ const Home = () => {
               <div className="mt-auto mb-auto">
                 <img
                   className="w-1/4 ml-auto mr-auto mb-10 mt-5"
-                  src="./src/assets/images/assemble.png"
+                  src="./assets/images/assemble.png"
                   alt="customize-icon"
                 ></img>
                 <h3 className="text-amber-200 text-xl md:text-2xl font-extralight text-center">

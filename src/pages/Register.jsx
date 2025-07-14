@@ -28,13 +28,13 @@ function Register() {
       {/* image-banner-for-background */}
       <img
         className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30 hidden md:block"
-        src="./src/assets/images/Custombot_Banner_Transparent.png"
+        src="./assets/images/Custombot_Banner_Transparent.png"
         alt="a banner picture of custom bots"
       />
       {/* image-banner-for-background */}
       <img
         className="absolute w-auto h-9/10 z-5 left-auto right-auto pointer-events-none brightness-30 md:hidden"
-        src="./src/assets/images/Custombot_Banner_Transparent_mobile.png"
+        src="./assets/images/Custombot_Banner_Transparent_mobile.png"
         alt="a banner picture of custom bots"
       />
       <div className="absolute marquee-wrapper h-1/1 w-1/1 z-3 flex flex-row items-center justify-evenly">

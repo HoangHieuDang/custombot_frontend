@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="bg-slate-800 text-white py-6 mt-10">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         <img
-          src="/src/assets/images/PLAplay_logo.png"
+          src="/assets/images/PLAplay_Logo.png"
           className="ml-5 h-9 w-auto justify-self mt-auto mb-auto"
           alt="PLAplay logo"
         />
