@@ -9,13 +9,13 @@ function Login({ setUser }) {
 
   const loginUser = async () => {
     try {
-      await httpClient.post("/users/login", {
+      const res = await httpClient.post("/users/login", {
         email,
         password,
       });
       //add a small delay
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      const res = await httpClient.get("/users/@me");
+      //await new Promise((resolve) => setTimeout(resolve, 100));
+      //const res = await httpClient.get("/users/@me");
       console.log("res", res);
       setUser(res.data);
       navigate("/custombot");
