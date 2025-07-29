@@ -1,26 +1,33 @@
 import { useState } from "react";
-import httpClient from "../api/httpClient";
 import { useNavigate } from "react-router-dom";
 import Users from "../api/usersApi";
+import { BeatLoader } from "react-spinners";
 
 function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isRegFail, setIsRegFail] = useState(false);
   const [regFailMsg, setRegFailMsg] = useState("");
   const navigate = useNavigate();
 
   const registerUser = async () => {
-    const usersApi = new Users();
-    const result = await usersApi.addUser(username, password, email);
-    if (result.success) {
-      setIsRegFail(false);
-      navigate("/login");
-    } else {
-      setIsRegFail(true);
-      setRegFailMsg(result.message);
-    }
+    setIsLoading(true)
+    try{    const usersApi = new Users();
+      const result = await usersApi.addUser(username, password, email);
+      if (result.success) {
+        setIsRegFail(false);
+        navigate("/login");
+      } else {
+        setIsRegFail(true);
+        setRegFailMsg(result.message);
+      }} catch{
+        setRegFailMsg("Communication with database failed!")
+      } finally {
+        setIsLoading(false)
+      }
+
   };
 
   return (
@@ -55,6 +62,7 @@ function Register() {
         <h1 className="text-2xl font-extralight mb-4 text-amber-300">
           Register
         </h1>
+        <BeatLoader color={"#ffdd80"} loading={isLoading} size={15} cssOverride={{marginBottom:"5px"}} />
         {isRegFail ? (
           <p className="text-center text-sm text-red-400 mb-2">
             Register failed: {`${regFailMsg}`}
