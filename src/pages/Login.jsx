@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoginFail, setIsLoginFail] = useState(false);
+  const [loginErrorMsg, setLoginErrorMsg] =useState("");
   const navigate = useNavigate();
 
   const loginUser = async () => {
@@ -20,8 +22,9 @@ function Login({ setUser }) {
       setUser(res.data);
       navigate("/custombot");
     } catch (err) {
-      alert("Login failed.");
-      console.warn("Can not login: ", err);
+      setIsLoginFail(true)
+      console.warn("login failed: ", err)
+      setLoginErrorMsg("email or password is not correct!")
     }
   };
 
@@ -55,6 +58,7 @@ function Login({ setUser }) {
       </div>
       <div className="ml-auto mr-auto w-9/12 md:w-6/12 p-4 z-10 bg-gray-700 flex flex-col items-center justify-center rounded-2xl">
         <h1 className="text-2xl font-extralight mb-4 text-amber-300">Login</h1>
+        {isLoginFail?<p className="text-center text-sm text-red-400 mb-2">Login failed: {`${loginErrorMsg}`}</p>:null}
         <input
           className="border p-2 mb-2 w-full md:w-3/10"
           type="text"

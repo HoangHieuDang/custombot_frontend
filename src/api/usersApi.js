@@ -1,152 +1,158 @@
 import { BASE_URL } from "./apiConnConfig";
 
 export default class Users {
-  //Create
-  async addUser(username, password, email) {
-    const api_post_req = "/users/";
-    try {
-      const response = await fetch(`${BASE_URL}${api_post_req}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          //turn this js object to json
-          username: username,
-          password: password,
-          email: email,
-        }),
-      });
-      const data = await response.json(); //json parsed this into javascript object
-      if (response.ok) {
-        console.log("Success:", data.message);
-      } else {
-        console.error("Error:", data.error);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  }
+    //Create
+    async addUser(username, password, email) {
+        const api_post_req = "/users/register";
+        try {
+            const response = await fetch(`${BASE_URL}${api_post_req}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    email,
+                }),
+            });
 
-  //Read
-  async getUser({ id, username, createdAt, email } = {}) {
-    const params = new URLSearchParams();
+            const data = await response.json(); // parsed JSON body
 
-    if (id) params.append("id", id);
-    if (username) params.append("username", username);
-    if (createdAt) params.append("created_at", createdAt);
-    if (email) params.append("email", email);
-
-    const api_get_req = `/users/?${params.toString()}`;
-
-    const response = await fetch(`${BASE_URL}${api_get_req}`); //it takes a while to fetch data from api
-    return await response.json(); //it takes a while to turn data into json
-  }
-
-  //Update
-  async updateUser({ id, username, email, password } = {}) {
-    if (!id) return { success: false, message: "User ID is required." };
-
-    const api_put_req = `/users/${id}`;
-    const updatedFields = {};
-
-    if (username) updatedFields.username = username;
-    if (email) updatedFields.email = email;
-    if (password) updatedFields.password = password;
-
-    if (Object.keys(updatedFields).length === 0) {
-      return { success: false, message: "No fields to update." };
+            if (response.ok) {
+                return { success: true, message: data.message };
+            } else {
+                // structured error from backend: { code: "...", message: "..." }
+                return { success: false, code: data.code, message: data.message };
+            }
+        } catch (error) {
+            return {
+                success: false,
+                code: "network_error",
+                message: "Network error: " + error.message,
+            };
+        }
     }
 
-    try {
-      const response = await fetch(`${BASE_URL}${api_put_req}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedFields),
-      });
+    //Read
+    async getUser({ id, username, createdAt, email } = {}) {
+        const params = new URLSearchParams();
 
-      const data = await response.json();
+        if (id) params.append("id", id);
+        if (username) params.append("username", username);
+        if (createdAt) params.append("created_at", createdAt);
+        if (email) params.append("email", email);
 
-      if (response.ok) {
-        console.log(`User ${id} updated successfully:`, data.message);
-        return { success: true, message: data.message };
-      } else {
-        console.warn("Error updating user:", data.error);
-        return { success: false, message: data.error };
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      return { success: false, message: "Network error, please try again." };
+        const api_get_req = `/users/?${params.toString()}`;
+
+        const response = await fetch(`${BASE_URL}${api_get_req}`); //it takes a while to fetch data from api
+        return await response.json(); //it takes a while to turn data into json
     }
-  }
 
-  async logOutUser() {
-    try {
-      const response = await fetch(`${BASE_URL}/users/logout`, {
-        method: "POST",
-        credentials: "include", // ← must include this
-      });
+    //Update
+    async updateUser({ id, username, email, password } = {}) {
+        if (!id) return { success: false, message: "User ID is required." };
 
-      return response.ok;
-    } catch (err) {
-      console.warn("Error when logging user out: ", err);
-      return false;
+        const api_put_req = `/users/${id}`;
+        const updatedFields = {};
+
+        if (username) updatedFields.username = username;
+        if (email) updatedFields.email = email;
+        if (password) updatedFields.password = password;
+
+        if (Object.keys(updatedFields).length === 0) {
+            return { success: false, message: "No fields to update." };
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}${api_put_req}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedFields),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log(`User ${id} updated successfully:`, data.message);
+                return { success: true, message: data.message };
+            } else {
+                console.warn("Error updating user:", data.error);
+                return { success: false, message: data.error };
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            return { success: false, message: "Network error, please try again." };
+        }
     }
-  }
 
-  //Delete
-  // Function to delete a user
-  async deleteUser(userId) {
-    try {
-      const response = await fetch(`${BASE_URL}/users/${userId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    async logOutUser() {
+        try {
+            const response = await fetch(`${BASE_URL}/users/logout`, {
+                method: "POST",
+                credentials: "include", // ← must include this
+            });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log(`User ${userId} deleted:`, data.message);
-        alert(`User ${userId} deleted successfully!`);
-      } else {
-        console.error("Error deleting user:", data.error);
-        alert(`Error deleting user: ${data.error}`);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      alert("Network error. Please try again.");
+            return response.ok;
+        } catch (err) {
+            console.warn("Error when logging user out: ", err);
+            return false;
+        }
     }
-  }
 
-  // Function to delete a custom bot from a user
-  async deleteCustomBotFromUser(userId, botId) {
-    try {
-      const response = await fetch(`${BASE_URL}/users/${userId}/${botId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    //Delete
+    // Function to delete a user
+    async deleteUser(userId) {
+        try {
+            const response = await fetch(`${BASE_URL}/users/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-      const data = await response.json();
+            const data = await response.json();
 
-      if (response.ok) {
-        console.log(
-          `Custom Bot ${botId} deleted from user ${userId}:`,
-          data.message
-        );
-        alert(`Custom Bot ${botId} deleted from user ${userId} successfully!`);
-      } else {
-        console.error("Error deleting custom bot from user:", data.error);
-        alert(`Error deleting custom bot from user: ${data.error}`);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      alert("Network error. Please try again.");
+            if (response.ok) {
+                console.log(`User ${userId} deleted:`, data.message);
+                alert(`User ${userId} deleted successfully!`);
+            } else {
+                console.error("Error deleting user:", data.error);
+                alert(`Error deleting user: ${data.error}`);
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("Network error. Please try again.");
+        }
     }
-  }
+
+    // Function to delete a custom bot from a user
+    async deleteCustomBotFromUser(userId, botId) {
+        try {
+            const response = await fetch(`${BASE_URL}/users/${userId}/${botId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log(
+                    `Custom Bot ${botId} deleted from user ${userId}:`,
+                    data.message
+                );
+                alert(`Custom Bot ${botId} deleted from user ${userId} successfully!`);
+            } else {
+                console.error("Error deleting custom bot from user:", data.error);
+                alert(`Error deleting custom bot from user: ${data.error}`);
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("Network error. Please try again.");
+        }
+    }
 }
