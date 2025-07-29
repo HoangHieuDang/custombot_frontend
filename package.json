@@ -17,6 +17,7 @@
     "dotenv": "^17.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-spinners": "^0.17.0",
     "three": "^0.174.0"
   },
   "devDependencies": {

@@ -12,12 +12,14 @@ import httpClient from "./api/httpClient";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
 import About from "./pages/About";
+import { SquareLoader } from "react-spinners";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loaded, setLoaded] = useState(false); // prevent flicker
+  const [isLoading, setIsLoading] = useState(true); // Start as true
 
   async function fetchUser() {
+    setIsLoading(true);
     try {
       const res = await httpClient.get(`${BASE_URL}/users/@me`);
       setUser(res.data);
@@ -25,7 +27,7 @@ function App() {
       console.warn(err);
       setUser(null);
     } finally {
-      setLoaded(true);
+      setIsLoading(false);
     }
   }
 
@@ -33,14 +35,30 @@ function App() {
     fetchUser();
   }, []);
 
-  if (!loaded) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center">
+        <SquareLoader
+          color={"#ffdd80"}
+          loading={true}
+          size={200}
+          cssOverride={{
+            display: "block",
+            margin: "0 auto",
+            opacity: "0.4",
+          }}
+        />
+        <p className="text-amber-100 mt-4 text-xl font-light">
+          Loading PLAplay...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>
-      {/* without flex div there will be no awareness of screen height, components will not be arranged dynamically which can lead to unwanted overlapping*/}
       <div className="flex flex-col min-h-screen">
         <Header user={user} onLogout={() => setUser(null)} />
-        {/* flex-grow allows the main component to stretch and fill in the blank space if there is still place on screen and push the footer element down */}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -57,7 +75,7 @@ function App() {
                   <Profile key={user.id} user={user} fetchUser={fetchUser} />
                 ) : (
                   <Navigate to="/login" />
-                ) //reassign user.id to key property everytime the user gets fetched again will force the component to re-render
+                )
               }
             />
             <Route
