@@ -46,6 +46,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
     // Reset before fetching new data
     setCurrentParts({});
     setPartUrls({});
+    setIsCustomBotOrdered(false);
 
     const fetchPartTypesList = async () => {
       const partsApi = new Parts();
@@ -154,6 +155,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
         }
       } else {
         // If no parts, inject one fallback skeleton
+        // also we have to add the fallback skeleton part into the backend to the backend
         try {
           const res = await partsApi.getPart({
             part_type: "skeleton",
@@ -163,6 +165,19 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
           if (res?.results?.length > 0) {
             const skeleton = res.results[0];
+            //add part back to bot in the backend again
+            try {
+              await botApi.addPartToBot({
+                part_id: skeleton.id,
+                custom_robot_id: botId,
+                amount: 1,
+                direction: "center",
+              });
+            } catch (err) {
+              console.warn("Failed to add part to bot: ", err);
+            }
+
+            //add skeleton part to partUrlsObj and currentPartsObj
             currentPartsObj["skeleton"] = {
               index: 0,
               direction: "center",
@@ -175,6 +190,8 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                 partId: skeleton.id,
               },
             ];
+          } else {
+            console.warn("Failed to fetch fallback skeleton part: ", res);
           }
         } catch (err) {
           console.warn("Failed to fetch fallback skeleton part: ", err);
@@ -324,7 +341,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
         }
       }
 
-      console.log("CustomBot successfully updated!");
+      //console.log("CustomBot successfully updated!");
       //set the isCustomBotSaved to true since saving in database
       setIsCustomBotSaved(true);
     } catch (err) {
@@ -363,6 +380,9 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
   const handleOrder = async () => {
     const orderApi = new Orders();
+    //Save the current custombot configuration and name before ordering
+    saveCustomBotName();
+    saveCustomBotParts();
     const result = await orderApi.createOrder({
       user_id: userId, // should be passed to the panel
       custom_robot_id: selectedBot.id,
@@ -376,10 +396,9 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
     if (result === true) {
       console.log("Bot added to cart!");
       setIsCustomBotOrdered(true);
-      //since the status of custombot will be changed to "ordered", 
+      //since the status of custombot will be changed to "ordered",
       //ordered custombot also has to be refetched to sync the data across backend and frontend
       refetchCustomBots();
-      
     } else {
       console.warn("Failed to add bot to cart.");
       setIsCustomBotOrdered(false);
@@ -402,7 +421,9 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
             <button
               onClick={handleOrder}
-              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${isCustomBotOrdered?"animate-bg-green":"bg-gray-700"}`}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                isCustomBotOrdered ? "animate-bg-green" : "bg-gray-700"
+              }`}
             >
               {isCustomBotOrdered ? "Bot ordered" : "Order this bot"}
             </button>
