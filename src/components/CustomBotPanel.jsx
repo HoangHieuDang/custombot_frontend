@@ -6,7 +6,7 @@ import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 import Orders from "../api/ordersApi";
 
-const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
+const CustomBotPanel = ({ userId, selectedBot, onBotDeleted, refetchCustomBots }) => {
   const basePath = "./assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
@@ -38,12 +38,15 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
   const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
   //isCustomBotOrdered tells whether the custombot has been ordered
   const [isCustomBotOrdered, setIsCustomBotOrdered] = useState(false);
+  //isBotDeleted tells whether the custombot has been deleted
+  const [isBotDeleted, setIsBotDeleted] = useState(false);
 
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
     if (!botId) return;
 
     // Reset before fetching new data
+    setIsBotDeleted(false);
     setCurrentParts({});
     setPartUrls({});
     setIsCustomBotOrdered(false);
@@ -404,10 +407,32 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
       setIsCustomBotOrdered(false);
     }
   };
+
+  //handle delete custom bot
+  const handleDeleteBot = async () => {
+    const botApi = new Bots();
+    try {
+      const result = await botApi.deleteCustomBot(userId, selectedBot.id);
+      if (result) {
+        console.log(`Bot deleted`);
+        //setIsBotDeleted to true to re-render
+        setIsBotDeleted(true);
+        //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
+        refetchCustomBots();
+        //inform CustomBotList that a bot has been deleted
+        if (typeof onBotDeleted === "function") onBotDeleted();
+      } else {
+        console.warn(`Failed to delete bot`);
+      }
+    } catch (err) {
+      console.error("Unexpected error while deleting bot:", err);
+    }
+  };
+
   return (
     <>
       {/* Panel for settings options and customBot Name edit */}
-      <div className="bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
+      <div className="transition-all duration-500 animate-fade-in-scale bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
@@ -426,6 +451,15 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
               }`}
             >
               {isCustomBotOrdered ? "Bot ordered" : "Order this bot"}
+            </button>
+
+            <button
+              onClick={handleDeleteBot}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                isCustomBotOrdered ? "hidden" : "bg-gray-700"
+              }`}
+            >
+              Delete bot
             </button>
           </div>
         ) : (

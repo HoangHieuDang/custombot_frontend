@@ -48,6 +48,11 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
     }
   };
 
+  //set selected bot to null when bot is deleted in CustomBotPanel Component
+  const handleBotDeleted = () => {
+    setSelectedBot(null)
+  };
+
   return (
     <>
       <div className="h-1/1 w-screen">
@@ -55,7 +60,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
           Custombot lists
         </h1>
         <div
-          className={`transition-all duration-500 w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
+          className={`transition-all duration-500 animate-fade-in-scale w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
             selectedBot
               ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
               : "max-h-9/10"
@@ -71,6 +76,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                 className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-2 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
                 <p className="m-2">{`${bot.name}`}</p>
+
                 <p className="m-2 justify-self-end">
                   status:{" "}
                   <strong
@@ -83,6 +89,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                     {bot.status}
                   </strong>
                 </p>
+               
               </div>
             ))
           )}
@@ -104,6 +111,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
             userId={userId}
             selectedBot={selectedBot}
             refetchCustomBots={refetchCustomBots}
+            onBotDeleted={handleBotDeleted} 
           />
         ) : null}
       </div>
