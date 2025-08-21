@@ -6,7 +6,7 @@ import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 import Orders from "../api/ordersApi";
 
-const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
+const CustomBotPanel = ({ userId, selectedBot, onBotDeleted, refetchCustomBots }) => {
   const basePath = "./assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
@@ -38,14 +38,18 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
   const [isCustomBotSaved, setIsCustomBotSaved] = useState(false);
   //isCustomBotOrdered tells whether the custombot has been ordered
   const [isCustomBotOrdered, setIsCustomBotOrdered] = useState(false);
+  //isBotDeleted tells whether the custombot has been deleted
+  const [isBotDeleted, setIsBotDeleted] = useState(false);
 
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
     if (!botId) return;
 
     // Reset before fetching new data
+    setIsBotDeleted(false);
     setCurrentParts({});
     setPartUrls({});
+    setIsCustomBotOrdered(false);
 
     const fetchPartTypesList = async () => {
       const partsApi = new Parts();
@@ -154,6 +158,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
         }
       } else {
         // If no parts, inject one fallback skeleton
+        // also we have to add the fallback skeleton part into the backend to the backend
         try {
           const res = await partsApi.getPart({
             part_type: "skeleton",
@@ -163,6 +168,19 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
           if (res?.results?.length > 0) {
             const skeleton = res.results[0];
+            //add part back to bot in the backend again
+            try {
+              await botApi.addPartToBot({
+                part_id: skeleton.id,
+                custom_robot_id: botId,
+                amount: 1,
+                direction: "center",
+              });
+            } catch (err) {
+              console.warn("Failed to add part to bot: ", err);
+            }
+
+            //add skeleton part to partUrlsObj and currentPartsObj
             currentPartsObj["skeleton"] = {
               index: 0,
               direction: "center",
@@ -175,6 +193,8 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
                 partId: skeleton.id,
               },
             ];
+          } else {
+            console.warn("Failed to fetch fallback skeleton part: ", res);
           }
         } catch (err) {
           console.warn("Failed to fetch fallback skeleton part: ", err);
@@ -324,7 +344,7 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
         }
       }
 
-      console.log("CustomBot successfully updated!");
+      //console.log("CustomBot successfully updated!");
       //set the isCustomBotSaved to true since saving in database
       setIsCustomBotSaved(true);
     } catch (err) {
@@ -363,6 +383,9 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
   const handleOrder = async () => {
     const orderApi = new Orders();
+    //Save the current custombot configuration and name before ordering
+    saveCustomBotName();
+    saveCustomBotParts();
     const result = await orderApi.createOrder({
       user_id: userId, // should be passed to the panel
       custom_robot_id: selectedBot.id,
@@ -376,19 +399,40 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
     if (result === true) {
       console.log("Bot added to cart!");
       setIsCustomBotOrdered(true);
-      //since the status of custombot will be changed to "ordered", 
+      //since the status of custombot will be changed to "ordered",
       //ordered custombot also has to be refetched to sync the data across backend and frontend
       refetchCustomBots();
-      
     } else {
       console.warn("Failed to add bot to cart.");
       setIsCustomBotOrdered(false);
     }
   };
+
+  //handle delete custom bot
+  const handleDeleteBot = async () => {
+    const botApi = new Bots();
+    try {
+      const result = await botApi.deleteCustomBot(userId, selectedBot.id);
+      if (result) {
+        console.log(`Bot deleted`);
+        //setIsBotDeleted to true to re-render
+        setIsBotDeleted(true);
+        //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
+        refetchCustomBots();
+        //inform CustomBotList that a bot has been deleted
+        if (typeof onBotDeleted === "function") onBotDeleted();
+      } else {
+        console.warn(`Failed to delete bot`);
+      }
+    } catch (err) {
+      console.error("Unexpected error while deleting bot:", err);
+    }
+  };
+
   return (
     <>
       {/* Panel for settings options and customBot Name edit */}
-      <div className="bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
+      <div className="transition-all duration-500 animate-fade-in-scale bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
         {botStatus === "in_progress" ? (
           <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
             <button
@@ -402,9 +446,20 @@ const CustomBotPanel = ({ userId, selectedBot, refetchCustomBots }) => {
 
             <button
               onClick={handleOrder}
-              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${isCustomBotOrdered?"animate-bg-green":"bg-gray-700"}`}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                isCustomBotOrdered ? "animate-bg-green" : "bg-gray-700"
+              }`}
             >
               {isCustomBotOrdered ? "Bot ordered" : "Order this bot"}
+            </button>
+
+            <button
+              onClick={handleDeleteBot}
+              className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                isCustomBotOrdered ? "hidden" : "bg-gray-700"
+              }`}
+            >
+              Delete bot
             </button>
           </div>
         ) : (
