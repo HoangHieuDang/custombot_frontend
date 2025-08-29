@@ -1,17 +1,21 @@
 import React from "react";
 import CustomBotPanel from "./CustomBotPanel";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Bots from "../api/customBotsApi";
 
 const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
   //customBots is an [{...},{...},{...},...]
   const [selectedBot, setSelectedBot] = useState(null);
-
-  const handleChosenBot = (bot) => {
+  //useRef Imperative to call the save Custom bot functions from child CustomBotPanel
+  const saveBotRef = useRef(null);
+  const handleChosenBot = async (bot) => {
+        // if a bot is already open, save before switching
+    if (saveBotRef.current && selectedBot && selectedBot.id !== bot.id) {
+      await saveBotRef.current.saveBot();
+    }
     setSelectedBot(bot);
-    return bot;
   };
-
+  
   //Handling Create new Bot
   const createNewBot = async () => {
     const botApi = new Bots();
@@ -50,7 +54,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
 
   //set selected bot to null when bot is deleted in CustomBotPanel Component
   const handleBotDeleted = () => {
-    setSelectedBot(null)
+    setSelectedBot(null);
   };
 
   return (
@@ -89,7 +93,6 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                     {bot.status}
                   </strong>
                 </p>
-               
               </div>
             ))
           )}
@@ -108,10 +111,11 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
 
         {selectedBot ? (
           <CustomBotPanel
+            ref = {saveBotRef}
             userId={userId}
             selectedBot={selectedBot}
             refetchCustomBots={refetchCustomBots}
-            onBotDeleted={handleBotDeleted} 
+            onBotDeleted={handleBotDeleted}
           />
         ) : null}
       </div>
