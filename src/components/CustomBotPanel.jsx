@@ -5,8 +5,9 @@ import { DynamicPart } from "./DynamicPart";
 import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 import Orders from "../api/ordersApi";
+import { forwardRef, useImperativeHandle } from "react";
 
-const CustomBotPanel = ({ userId, selectedBot, onBotDeleted, refetchCustomBots }) => {
+const CustomBotPanel = forwardRef(({ userId, selectedBot, onBotDeleted, refetchCustomBots}, ref) => {
   const basePath = "./assets/3d_assets/";
   const botId = selectedBot.id;
   const botStatus = selectedBot.status;
@@ -40,6 +41,14 @@ const CustomBotPanel = ({ userId, selectedBot, onBotDeleted, refetchCustomBots }
   const [isCustomBotOrdered, setIsCustomBotOrdered] = useState(false);
   //isBotDeleted tells whether the custombot has been deleted
   const [isBotDeleted, setIsBotDeleted] = useState(false);
+
+  // expose functions to parent CustomBotList.jsx so that CustomBotList can call them
+  useImperativeHandle(ref, () => ({
+    async saveBot() {
+      await saveCustomBotName();
+      await saveCustomBotParts();
+    }
+  }));
 
   //first useEffect fetches bot parts everytime botId is changed
   useEffect(() => {
@@ -632,6 +641,6 @@ const CustomBotPanel = ({ userId, selectedBot, onBotDeleted, refetchCustomBots }
       </div>
     </>
   );
-};
+});
 
 export default CustomBotPanel;
