@@ -17,6 +17,7 @@ import { SquareLoader } from "react-spinners";
 function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Start as true
+  const [isOrderOpen, setIsOrderOpen] = useState(false);
 
   async function fetchUser() {
     setIsLoading(true);
@@ -58,7 +59,11 @@ function App() {
   return (
     <BrowserRouter>
       <div className="flex flex-col min-h-screen">
-        <Header user={user} onLogout={() => setUser(null)} />
+        <Header
+          user={user}
+          isOrderOpen={isOrderOpen}
+          onLogout={() => setUser(null)}
+        />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -90,7 +95,11 @@ function App() {
             <Route
               path="/cart"
               element={
-                user ? <Cart userId={user.id} /> : <Navigate to="/login" />
+                user ? (
+                  <Cart userId={user.id} setIsOrderOpen={setIsOrderOpen} />
+                ) : (
+                  <Navigate to="/login" />
+                )
               }
             />
           </Routes>

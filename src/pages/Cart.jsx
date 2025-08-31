@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
 
-export default function Cart({ userId }) {
+export default function Cart({ userId, setIsOrderOpen }) {
   const [cartOrders, setCartOrders] = useState([]);
   const [customBotMap, setCustomBotMap] = useState({});
   const [isPaying, setIsPaying] = useState(false);
@@ -44,6 +44,9 @@ export default function Cart({ userId }) {
     };
     if (cartOrders.length > 0) {
       fetchCustomBots();
+      setIsOrderOpen(true)
+    } else {
+      setIsOrderOpen(false)
     }
   }, [cartOrders]);
 
