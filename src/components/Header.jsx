@@ -1,11 +1,13 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect, Fragment } from "react";
+import Orders from "../api/ordersApi";
 import Users from "../api/usersApi";
 
-export default function Header({ user, onLogout }) {
+export default function Header({ user, onLogout, isOrderOpen }) {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  //isOrderOpen tells whether an order has been opened and still haven't paid yet
   const dropdownRef = useRef(null);
 
   function liCssStyling(isActive) {
@@ -99,7 +101,7 @@ export default function Header({ user, onLogout }) {
             className="flex items-center justify-center mr-3"
           >
             <img
-              src="/assets/ui_components/trolley.png"
+              src={isOrderOpen ? "/assets/ui_components/trolley_with_red_dot.png" : "/assets/ui_components/trolley.png"}
               className="w-6.5 h-6 hover:brightness-75"
             />
           </NavLink>
@@ -230,7 +232,7 @@ export default function Header({ user, onLogout }) {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <img
-                      src="/assets/ui_components/trolley.png"
+                      src={isOrderOpen ? "/assets/ui_components/trolley_with_red_dot.png" : "/assets/ui_components/trolley.png"}
                       className="w-6.5 h-6 hover:brightness-75 ml-auto mr-auto"
                     />
                   </NavLink>
