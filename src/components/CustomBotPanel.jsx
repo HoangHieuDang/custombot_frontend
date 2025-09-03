@@ -397,8 +397,8 @@ const CustomBotPanel = forwardRef(
     const handleOrder = async () => {
       const orderApi = new Orders();
       //Save the current custombot configuration and name before ordering
-      saveCustomBotName();
-      saveCustomBotParts();
+      await saveCustomBotName();
+      await saveCustomBotParts();
       const result = await orderApi.createOrder({
         user_id: userId, // should be passed to the panel
         custom_robot_id: selectedBot.id,
