@@ -443,6 +443,26 @@ const CustomBotPanel = forwardRef(
       }
     };
 
+    //handle reorder an ordered bot
+    const handleReorderBot = async () => {
+      //check if the order is already in the cart by sending a search request to backend, if the custombot id is matching with a "pending" order status, it means the order of the same bot hasn't been paid and still lying in the cart
+      const api = new Orders();
+      const data = await api.getOrder({
+        user_id: userId,
+        status: "pending",
+        custom_robot_id: selectedBot.id,
+      });
+      if (data && data.length > 0 && Array.isArray(data)) {
+        console.log("pending order: ", data);
+        navigate("/cart");
+      }
+
+      //if no pending order is found, the bot can be ordered again
+      else {
+        handleOrder();
+      }
+    };
+
     return (
       <>
         {/* Panel for settings options and customBot Name edit */}
@@ -477,10 +497,18 @@ const CustomBotPanel = forwardRef(
               </button>
             </div>
           ) : (
-            <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
+            <div className="flex flex-row items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
               <h3 className="m-5">
                 Custom Bot is ordered and cannot be edited anymore
               </h3>
+              <button
+                onClick={handleReorderBot}
+                className={`rounded-2xl p-3 m-3 cursor-pointer hover:bg-gray-600 ${
+                  isCustomBotOrdered ? "hidden" : "bg-gray-700"
+                }`}
+              >
+                Reorder
+              </button>
             </div>
           )}
           <div className="flex flex-row items-center ml-auto mr-auto justify-center">
@@ -508,7 +536,10 @@ const CustomBotPanel = forwardRef(
                 <h2 className="text-center font-extralight m-2 md:m-4 text-amber-300 text-xl md:text-2xl">
                   Custombot: {editedName}
                 </h2>
-                <button onClick={editNameHandling}>
+                <button
+                  onClick={editNameHandling}
+                  className={botStatus === "ordered" ? "hidden" : "block"}
+                >
                   <img
                     src={"./assets/ui_components/edit.png"}
                     alt="edit-icon"
