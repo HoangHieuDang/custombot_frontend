@@ -9,13 +9,13 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
   //useRef Imperative to call the save Custom bot functions from child CustomBotPanel
   const saveBotRef = useRef(null);
   const handleChosenBot = async (bot) => {
-        // if a bot is already open, save before switching
+    // if a bot is already open, save before switching
     if (saveBotRef.current && selectedBot && selectedBot.id !== bot.id) {
       await saveBotRef.current.saveBot();
     }
     setSelectedBot(bot);
   };
-  
+
   //Handling Create new Bot
   const createNewBot = async () => {
     const botApi = new Bots();
@@ -80,7 +80,6 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                 className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-2 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
               >
                 <p className="m-2">{`${bot.name}`}</p>
-
                 <p className="m-2 justify-self-end">
                   status:{" "}
                   <strong
@@ -111,7 +110,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
 
         {selectedBot ? (
           <CustomBotPanel
-            ref = {saveBotRef}
+            ref={saveBotRef}
             userId={userId}
             selectedBot={selectedBot}
             refetchCustomBots={refetchCustomBots}

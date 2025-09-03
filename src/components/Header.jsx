@@ -95,19 +95,27 @@ export default function Header({ user, onLogout, isOrderOpen }) {
 
         {/* Desktop Cart + Auth */}
         <div className="hidden md:flex items-center ml-auto" ref={dropdownRef}>
-          <NavLink
-            to="/cart"
-            end
-            className="flex items-center justify-center mr-3"
-          >
-            <img
-              src={isOrderOpen ? "/assets/ui_components/trolley_with_red_dot.png" : "/assets/ui_components/trolley.png"}
-              className="w-6.5 h-6 hover:brightness-75"
-            />
-          </NavLink>
-
           {user ? (
             <>
+              <NavLink
+                to="/cart"
+                end
+                className="flex items-center justify-center mr-3"
+              >
+                <img
+                  src={
+                    isOrderOpen
+                      ? "/assets/ui_components/trolley_with_red_dot.png"
+                      : "/assets/ui_components/trolley.png"
+                  }
+                  className={
+                    isOrderOpen
+                      ? "animate-bounce w-6.5 h-6 hover:brightness-75"
+                      : "w-6.5 h-6 hover:brightness-75"
+                  }
+                />
+              </NavLink>
+
               <p className="font-extralight mr-2 text-amber-500">
                 Hi, {user.username}!
               </p>
@@ -232,8 +240,16 @@ export default function Header({ user, onLogout, isOrderOpen }) {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <img
-                      src={isOrderOpen ? "/assets/ui_components/trolley_with_red_dot.png" : "/assets/ui_components/trolley.png"}
-                      className="w-6.5 h-6 hover:brightness-75 ml-auto mr-auto"
+                      src={
+                        isOrderOpen
+                          ? "/assets/ui_components/trolley_with_red_dot.png"
+                          : "/assets/ui_components/trolley.png"
+                      }
+                      className={
+                        isOrderOpen
+                          ? "animate-bounce w-6.5 h-6 hover:brightness-75 mr-auto ml-auto"
+                          : "w-6.5 h-6 hover:brightness-75 ml-auto mr-auto"
+                      }
                     />
                   </NavLink>
                 </div>
