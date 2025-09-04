@@ -103,6 +103,12 @@ export default function Cart({ userId, setIsOrderOpen }) {
       .toFixed(2);
   };
 
+  const handleDeletePendingOrder = async (orderId) => {
+    const api = new Orders();
+    await api.deleteOrder({ id: orderId });
+    fetchCart();
+  };
+
   return (
     <>
       <div className="flex flex-col lg:flex-col w-full h-screen p-6 gap-6 justify-center">
@@ -156,6 +162,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
                           alt="minus-icon"
                         />
                       </div>
+                      <img onClick={()=>{handleDeletePendingOrder(order.id)}}/>
                     </div>
                   </div>
                 ) : null;

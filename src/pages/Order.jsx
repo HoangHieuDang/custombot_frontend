@@ -1,6 +1,7 @@
 import { useEffect, useState, Fragment } from "react";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
+import Preview3dWindow from "../components/Preview3dWindow";
 
 const OrderStatusStepper = ({ status }) => {
   //"paid", "production", "shipping", "received"
@@ -8,7 +9,7 @@ const OrderStatusStepper = ({ status }) => {
   const currentStepIndex = steps.indexOf(status);
 
   return (
-    <div className="flex flex-col gap-2 text-sm">
+    <div className="flex flex-col gap-2 text-sm mt-auto mb-auto">
       {steps.map((step, index) => (
         <div key={index} className="flex items-center gap-2">
           <div
@@ -34,6 +35,7 @@ const OrderStatusStepper = ({ status }) => {
 const Order = ({ userId }) => {
   const [ordersList, setOrdersList] = useState(null);
   const [customBotMap, setCustomBotMap] = useState({});
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
 
   const fetchOrder = async () => {
     const api = new Orders();
@@ -86,7 +88,12 @@ const Order = ({ userId }) => {
               .map((order) => (
                 <div
                   key={order.orderId}
-                  className="border rounded-2xl p-5 bg-gray-800 shadow-md"
+                  className="border rounded-2xl p-5 bg-gray-800 shadow-md hover:bg-gray-700 cursor-pointer"
+                  onClick={() =>
+                    setExpandedOrderId(
+                      expandedOrderId === order.id ? null : order.id
+                    )
+                  }
                 >
                   <div className="flex justify-between mb-2">
                     <div>
@@ -111,7 +118,26 @@ const Order = ({ userId }) => {
                       {order.status}
                     </span>
                   </div>
-                  <OrderStatusStepper status={order.status} />
+                  <div className="grid grid-cols-2 grid-rows-1">
+                    <OrderStatusStepper status={order.status} />
+                    {expandedOrderId === order.id ? (
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="transition-all duration-500 w-5/6 h-25 animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:w-4/5 h-60"
+                      >
+                        <Preview3dWindow botId={order.custom_robot_id} />
+                      </div>
+                    ) : (
+                      <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
+                        <span className="block sm:hidden">Tap to preview</span>
+                        <span className="hidden sm:block">
+                          Tap to preview your design
+                        </span>
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))
           ) : (
@@ -128,25 +154,56 @@ const Order = ({ userId }) => {
               .filter((order) => pastStatuses.includes(order.status))
               .map((order) => (
                 <div
-                  key={order.orderId}
-                  className="border rounded-2xl p-5 bg-gray-700"
+                  key={order.id}
+                  className="border rounded-2xl p-5 bg-gray-800 shadow-md"
                 >
-                  <div className="flex justify-between">
+                  {/* Header → only this toggles expand/collapse */}
+                  <div
+                    className="flex justify-between mb-2 cursor-pointer"
+                    onClick={() =>
+                      setExpandedOrderId(
+                        expandedOrderId === order.id ? null : order.id
+                      )
+                    }
+                  >
                     <div>
                       <p className="text-lg font-medium">
                         {customBotMap[order.custom_robot_id]?.name ||
                           "Can't load Bot Name"}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        Order ID: {order.id}
-                      </p>
                       <p className="text-sm text-gray-400">
                         Date: {order.created_at}
                       </p>
+                      <p className="text-sm text-gray-500">
+                        Order ID: {order.id}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Quantity: {order.quantity}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Total price: {order.total_price}
+                      </p>
                     </div>
-                    <span className="text-xs text-green-600 self-start bg-green-100 px-3 py-1 rounded-full">
+                    <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
                       {order.status}
                     </span>
+                  </div>
+
+                  {/* Content section */}
+                  <div className="grid grid-cols-2 grid-rows-1">
+                    <OrderStatusStepper status={order.status} />
+                    {expandedOrderId === order.id ? (
+                      <div className="transition-all duration-500 animate-fade-in-scale w-2/5 h-full rounded-2xl overflow-hidden justify-self-center self-center">
+                        <Preview3dWindow botId={order.custom_robot_id} />
+                      </div>
+                    ) : (
+                      <p className="font-extralight animate-brightness-in-out justify-self-end self-end">
+                        <span className="block sm:hidden">Tap to preview</span>
+                        <span className="hidden sm:block">
+                          Tap to preview your design
+                        </span>
+                      </p>
+                    )}
                   </div>
                 </div>
               ))

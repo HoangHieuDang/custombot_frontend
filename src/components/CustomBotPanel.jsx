@@ -1,7 +1,5 @@
 import { useState, useEffect, Suspense, Fragment } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { DynamicPart } from "./DynamicPart";
+import Preview3dWindow from "./Preview3dWindow";
 import Parts from "../api/partsApi";
 import Bots from "../api/customBotsApi";
 import Orders from "../api/ordersApi";
@@ -11,7 +9,6 @@ import { useNavigate, Navigate } from "react-router-dom";
 const CustomBotPanel = forwardRef(
   ({ userId, selectedBot, onBotDeleted, refetchCustomBots }, ref) => {
     const navigate = useNavigate();
-    const basePath = "./assets/3d_assets/";
     const botId = selectedBot.id;
     const botStatus = selectedBot.status;
     // List of all possible robot part types
@@ -189,7 +186,7 @@ const CustomBotPanel = forwardRef(
                   direction: "center",
                 });
               } catch (err) {
-                console.warn("Failed to add part to bot: ", err);
+                console.warn("Failed to add fallback skeleton part to bot: ", err);
               }
 
               //add skeleton part to partUrlsObj and currentPartsObj
@@ -397,8 +394,8 @@ const CustomBotPanel = forwardRef(
     const handleOrder = async () => {
       const orderApi = new Orders();
       //Save the current custombot configuration and name before ordering
-      saveCustomBotName();
-      saveCustomBotParts();
+      await saveCustomBotName();
+      await saveCustomBotParts();
       const result = await orderApi.createOrder({
         user_id: userId, // should be passed to the panel
         custom_robot_id: selectedBot.id,
@@ -551,46 +548,9 @@ const CustomBotPanel = forwardRef(
           </div>
 
           <div className="flex flex-col md:flex-row gap-6 ml-5 mr-5 items-center justify-center">
-            {/* 3D Canvas */}
+            {/* 3D Preview Window */}
             <div className="transition-all duration-100 w-full md:w-3/7 h-[400px] md:h-[700px] border rounded-md overflow-hidden mb-5 hover:border-2 hover:border-amber-300">
-              <Canvas
-                style={{ backgroundColor: "#BE5B55" }}
-                camera={{ position: [0, 0, 15], fov: 100 }}
-              >
-                <ambientLight intensity={5} />
-                <directionalLight position={[1, 2, 5]} intensity={5} />
-                <OrbitControls />
-                <Suspense fallback={null}>
-                  {Object.entries(currentParts).map(([type, entry]) => {
-                    if (Array.isArray(entry)) {
-                      return entry
-                        .filter(
-                          (e) =>
-                            typeof e.modelUrl === "string" &&
-                            e.modelUrl.endsWith(".gltf")
-                        ) // <-- skip if empty only generate model with existing modelUrl and has .gltf format
-                        .map(({ modelUrl, direction }, idx) => (
-                          <DynamicPart
-                            key={`${type}_${direction}_${idx}`}
-                            url={`${basePath}${modelUrl}`}
-                            direction={direction}
-                            rotation={[0, Math.PI / 2, 0]}
-                          />
-                        ));
-                    } else {
-                      if (!entry.modelUrl) return null; // <-- skip if empty
-                      return (
-                        <DynamicPart
-                          key={`${type}`}
-                          url={`${basePath}${entry.modelUrl}`}
-                          direction={entry.direction}
-                          rotation={[0, Math.PI / 2, 0]}
-                        />
-                      );
-                    }
-                  })}
-                </Suspense>
-              </Canvas>
+              <Preview3dWindow currentParts={currentParts} />
             </div>
 
             {/* Customize Option Panel */}

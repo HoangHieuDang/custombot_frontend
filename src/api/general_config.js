@@ -1,0 +1,1 @@
+export const basePath = "./assets/3d_assets/"; //basePath for the 3d assets
