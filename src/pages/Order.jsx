@@ -193,7 +193,12 @@ const Order = ({ userId }) => {
                   <div className="grid grid-cols-2 grid-rows-1">
                     <OrderStatusStepper status={order.status} />
                     {expandedOrderId === order.id ? (
-                      <div className="transition-all duration-500 animate-fade-in-scale w-2/5 h-full rounded-2xl overflow-hidden justify-self-center self-center">
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="transition-all duration-500 animate-fade-in-scale w-2/5 h-full rounded-2xl overflow-hidden justify-self-center self-center"
+                      >
                         <Preview3dWindow botId={order.custom_robot_id} />
                       </div>
                     ) : (
