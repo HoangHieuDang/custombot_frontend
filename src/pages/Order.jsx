@@ -202,7 +202,7 @@ const Order = ({ userId }) => {
                         <Preview3dWindow botId={order.custom_robot_id} />
                       </div>
                     ) : (
-                      <p className="font-extralight animate-brightness-in-out justify-self-end self-end">
+                      <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
                         <span className="block sm:hidden">Tap to preview</span>
                         <span className="hidden sm:block">
                           Tap to preview your design
