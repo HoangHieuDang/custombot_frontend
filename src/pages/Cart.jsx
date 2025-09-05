@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Preview3dWindow from "../components/Preview3dWindow";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
 
@@ -6,6 +7,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
   const [cartOrders, setCartOrders] = useState([]);
   const [customBotMap, setCustomBotMap] = useState({});
   const [isPaying, setIsPaying] = useState(false);
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [shippingAddress, setShippingAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("credit_card");
@@ -17,7 +19,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
     const data = await api.getOrder({ user_id: userId, status: "pending" });
     if (data && Array.isArray(data)) {
       setCartOrders(data);
-    }else{
+    } else {
       setCartOrders([]);
     }
   };
@@ -44,9 +46,9 @@ export default function Cart({ userId, setIsOrderOpen }) {
     };
     if (cartOrders.length > 0) {
       fetchCustomBots();
-      setIsOrderOpen(true)
+      setIsOrderOpen(true);
     } else {
-      setIsOrderOpen(false)
+      setIsOrderOpen(false);
     }
   }, [cartOrders]);
 
@@ -104,8 +106,12 @@ export default function Cart({ userId, setIsOrderOpen }) {
   };
 
   const handleDeletePendingOrder = async (orderId) => {
+    // The backend should automatically switch the status of custombot from "ordered" to "in_progress"
+    // Only pending orders should be deletable
+    // when the the pending order is deleted
     const api = new Orders();
     await api.deleteOrder({ id: orderId });
+    // refetch cart again to update the cart
     fetchCart();
   };
 
@@ -113,7 +119,9 @@ export default function Cart({ userId, setIsOrderOpen }) {
     <>
       <div className="flex flex-col lg:flex-col w-full h-screen p-6 gap-6 justify-center">
         <div className="text-white w-full">
-          <h1 className="text-3xl font-light mb-4 mr-5 ml-5 text-center">Your Cart</h1>
+          <h1 className="text-3xl font-light mb-4 mr-5 ml-5 text-center">
+            Your Cart
+          </h1>
           {cartOrders.length === 0 ? (
             <p className="text-center">Your cart is empty</p>
           ) : (
@@ -130,39 +138,79 @@ export default function Cart({ userId, setIsOrderOpen }) {
                 return bot ? (
                   <div
                     key={order.id}
-                    className="bg-gray-800 p-4 rounded-xl mb-3"
+                    onClick={() => {
+                      setExpandedOrderId(
+                        expandedOrderId === order.id
+                          ? null
+                          : order.custom_robot_id
+                      );
+                    }}
+                    className="bg-gray-800 p-4 rounded-xl mb-3 hover:bg-gray-600 cursor-pointer"
                   >
                     <div>
-                      <div className="w-full grid grid-cols-2 items-center">
-                        <p className="text-lg font-semibold justify-self-start">
+                      <div className="w-full grid grid-cols-2 grid-rows-2 items-center md:grid-cols-3 md:grid-rows-1">
+                        <p className="col-start-1 row-start-1 text-lg font-semibold justify-self-start">
                           {bot.name}
                         </p>
-                        <p className="font-light justify-self-end">
+                        <div className="col-span-2 row-start-2 flex flex-row gap-2 justify-self-start items-center pt-3 pb-3 md:col-start-2 md:row-start-1 md:col-span-1 md:justify-self-center">
+                          <img
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              orderQuantityChange(order.id, -1);
+                            }}
+                            className="cursor-pointer hover:brightness-75 justify-self-end h-6 w-6"
+                            src="./assets/ui_components/minus_quant.png"
+                            alt="minus-icon"
+                          />
+                          <p className="text-sm text-gray-400 p-1 text-center">
+                            Quantity: {order.quantity}
+                          </p>
+                          <img
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              orderQuantityChange(order.id, 1);
+                            }}
+                            className="cursor-pointer hover:brightness-75 justify-self-start h-6 w-6"
+                            src="./assets/ui_components/add_quant.png"
+                            alt="minus-icon"
+                          />
+                        </div>
+                        <p className="col-start-2 row-start-1 font-light justify-self-end md:col-start-3 md:row-start-1">
                           Price: {order.total_price}
                         </p>
                       </div>
-                      <div className="mt-4 flex flex-row gap-5 justify-baseline items-center">
+                      <div className="mt-4 grid grid-cols-2 gap-5 justify-baseline items-center">
+                        <div className="pl-0 justify-self-start items-center">
+                          {expandedOrderId === order.custom_robot_id ? (
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                              className="h-60 transition-all duration-500 w-full animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-center self-center md:w-full"
+                            >
+                              <Preview3dWindow botId={order.custom_robot_id} />
+                            </div>
+                          ) : (
+                            <p className="pt-3 text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-start">
+                              <span className="block sm:hidden pl-0 text-start">
+                                Tap to preview
+                              </span>
+                              <span className="hidden sm:block pl-0 text-start">
+                                Tap to preview your design
+                              </span>
+                            </p>
+                          )}
+                        </div>
                         <img
-                          onClick={() => {
-                            orderQuantityChange(order.id, -1);
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePendingOrder(order.id);
                           }}
-                          className="h-4 w-4 cursor-pointer hover:brightness-75 justify-self-end"
-                          src="./assets/ui_components/minus_quant.png"
-                          alt="minus-icon"
-                        />
-                        <p className="text-sm text-gray-400">
-                          Quantity: {order.quantity}
-                        </p>
-                        <img
-                          onClick={() => {
-                            orderQuantityChange(order.id, 1);
-                          }}
-                          className="h-4 w-4 cursor-pointer hover:brightness-75 justify-self-start"
-                          src="./assets/ui_components/add_quant.png"
-                          alt="minus-icon"
+                          className="h-6 w-6 cursor-pointer hover:brightness-75 hover:h-7 hover:w-7 justify-self-end self-end-safe"
+                          src="./assets/ui_components/trash_can.png"
+                          alt="delete-icon"
                         />
                       </div>
-                      <img onClick={()=>{handleDeletePendingOrder(order.id)}}/>
                     </div>
                   </div>
                 ) : null;
@@ -171,9 +219,9 @@ export default function Cart({ userId, setIsOrderOpen }) {
                 {showPaymentForm ? null : (
                   <button
                     onClick={() => setShowPaymentForm(true)}
-                    className="w-1/2 bg-green-500 px-6 py-2 rounded hover:bg-green-600 justify-self-start"
+                    className="w-full bg-green-500 px-6 py-2 rounded hover:bg-green-600 justify-self-start md:w-1/2"
                   >
-                    Proceed to Payment
+                    purchase
                   </button>
                 )}
                 <p className="justify-self-end font-bold text-amber-200">
