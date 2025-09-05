@@ -17,9 +17,9 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
   };
 
   //Handling Create new Bot
-  const createNewBot = async () => {
+  const createNewBot = async (bot = null) => {
     const botApi = new Bots();
-    const baseName = "new_custom_bot";
+    let baseName = bot ? bot.name : "new_custom_bot";
     let newBotName = baseName;
     const botNameList = customBots.map((bot) => bot.name); // Extract names
 
@@ -52,6 +52,7 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
     }
   };
 
+  //Handling Duplicate Bot
   //set selected bot to null when bot is deleted in CustomBotPanel Component
   const handleBotDeleted = () => {
     setSelectedBot(null);
@@ -77,10 +78,11 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
               <div
                 onClick={() => handleChosenBot(bot)}
                 key={`div_bot_list_${bot.name}`}
-                className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid grid-cols-2 gap-2 font-extralight hover:bg-gray-400 cursor-pointer"
+                className="transition-all duration-700 bg-gray-600 rounded-2xl m-2 grid  gap-2 font-extralight hover:bg-gray-400 cursor-pointer grid-rows-3 grid-cols-1 md:grid-cols-3 md:grid-rows-1"
               >
-                <p className="m-2">{`${bot.name}`}</p>
-                <p className="m-2 justify-self-end">
+                <p className="m-2 text-amber-300 font-semibold">{`${bot.name}`}</p>
+
+                <p className="m-2 justify-self-start md:justify-self-end">
                   status:{" "}
                   <strong
                     className={
@@ -92,6 +94,18 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
                     {bot.status}
                   </strong>
                 </p>
+
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    createNewBot(bot);
+                  }}
+                  className="border-1 rounded-2xl m-1 transition-all duration-200 flex flex-row gap-2 justify-self-end cursor-pointer p-2 hover:text-amber-500 hover:font-bold hover:underline md:border-0"
+                >
+                  {bot.status === "ordered"
+                    ? "duplicate to re-edit"
+                    : "duplicate"}
+                </span>
               </div>
             ))
           )}
