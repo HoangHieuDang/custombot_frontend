@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Preview3dWindow from "../components/Preview3dWindow";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart({ userId, setIsOrderOpen }) {
+  const navigate = useNavigate();
   const [cartOrders, setCartOrders] = useState([]);
   const [customBotMap, setCustomBotMap] = useState({});
   const [isPaying, setIsPaying] = useState(false);
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [shippingAddress, setShippingAddress] = useState("");
@@ -71,7 +74,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
       });
     }
 
-    alert("Payment successful!");
+    setIsPaymentSuccess(true);
     setShowPaymentForm(false);
     // clear form and refresh cart
     setShippingAddress("");
@@ -123,7 +126,9 @@ export default function Cart({ userId, setIsOrderOpen }) {
             Your Cart
           </h1>
           {cartOrders.length === 0 ? (
-            <p className="text-center">Your cart is empty</p>
+            !isPaymentSuccess && (
+              <p className="text-center text-amber-100">Your cart is empty</p>
+            )
           ) : (
             <div
               className={`transition-all duration-500 w-full bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
@@ -140,9 +145,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
                     key={order.id}
                     onClick={() => {
                       setExpandedOrderId(
-                        expandedOrderId === order.id
-                          ? null
-                          : order.custom_robot_id
+                        expandedOrderId === order.id ? null : order.id
                       );
                     }}
                     className="bg-gray-800 p-4 rounded-xl mb-3 hover:bg-gray-600 cursor-pointer"
@@ -181,7 +184,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
                       </div>
                       <div className="mt-4 grid grid-cols-2 gap-5 justify-baseline items-center">
                         <div className="pl-0 justify-self-start items-center">
-                          {expandedOrderId === order.custom_robot_id ? (
+                          {expandedOrderId === order.id ? (
                             <div
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -262,6 +265,33 @@ export default function Cart({ userId, setIsOrderOpen }) {
             </button>
           </div>
         )}
+
+        {isPaymentSuccess ? (
+          <div className="w-auto flex flex-col bg-gray-700 p-4 rounded-xl text-white max-h-[90vh] justify-center">
+            <h2 className="text-xl mb-4 text-center font-extralight text-green-400">
+              Payment Successful!
+            </h2>
+            <p className="p-3 text-center font-extralight text-green-100">
+              Thank you for your purchase!
+            </p>
+            <button
+              className="self-center w-3/5 md:w-1/5 p-3 m-2 bg-gray-800 text-white font-extralight px-4 py-2 rounded hover:bg-gray-600 hover:text-amber-400 cursor-pointer"
+              onClick={() => {
+                navigate("/order");
+              }}
+            >
+              Track your orders
+            </button>
+            <button
+              className="self-center w-3/5 md:w-1/5 p-3 m-2 bg-gray-800 text-white font-extralight px-4 py-2 rounded hover:bg-gray-600 hover:text-amber-400 cursor-pointer"
+              onClick={() => {
+                navigate("/custombot");
+              }}
+            >
+              Customize another bot
+            </button>
+          </div>
+        ) : null}
       </div>
     </>
   );
