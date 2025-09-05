@@ -9,7 +9,7 @@ const OrderStatusStepper = ({ status }) => {
   const currentStepIndex = steps.indexOf(status);
 
   return (
-    <div className="flex flex-col gap-2 text-sm mt-auto mb-auto">
+    <div className="flex flex-col gap-0 min-w-0 text-sm mt-auto mb-auto md:gap-2">
       {steps.map((step, index) => (
         <div key={index} className="flex items-center gap-2">
           <div
@@ -28,6 +28,58 @@ const OrderStatusStepper = ({ status }) => {
           </span>
         </div>
       ))}
+    </div>
+  );
+};
+//OrderCard component to display each order
+const OrderCard = ({
+  order,
+  setExpandedOrderId,
+  expandedOrderId,
+  customBotMap,
+}) => {
+  return (
+    <div
+      key={order.orderId}
+      className="border rounded-2xl p-5 bg-gray-800 shadow-md hover:bg-gray-700 cursor-pointer"
+      onClick={() =>
+        setExpandedOrderId(expandedOrderId === order.id ? null : order.id)
+      }
+    >
+      <div className="flex justify-between mb-2">
+        <div>
+          <p className="text-lg font-medium">
+            {customBotMap[order.custom_robot_id]?.name || "Can't load Bot Name"}
+          </p>
+          <p className="text-sm text-gray-400">Date: {order.created_at}</p>
+          <p className="text-sm text-gray-500">Order ID: {order.id}</p>
+          <p className="text-sm text-gray-500">Quantity: {order.quantity}</p>
+          <p className="text-sm text-gray-500">
+            Total price: {order.total_price}
+          </p>
+        </div>
+        <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
+          {order.status}
+        </span>
+      </div>
+      <div className="grid grid-cols-2 grid-rows-1">
+        <OrderStatusStepper status={order.status} />
+        {expandedOrderId === order.id ? (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="transition-all duration-500 w-5/6 h-25 animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:w-4/5 h-60"
+          >
+            <Preview3dWindow botId={order.custom_robot_id} />
+          </div>
+        ) : (
+          <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
+            <span className="block sm:hidden">Tap to preview</span>
+            <span className="hidden sm:block">Tap to preview your design</span>
+          </p>
+        )}
+      </div>
     </div>
   );
 };
@@ -86,59 +138,13 @@ const Order = ({ userId }) => {
             ordersList
               .filter((order) => ongoingStatuses.includes(order.status))
               .map((order) => (
-                <div
+                <OrderCard
                   key={order.orderId}
-                  className="border rounded-2xl p-5 bg-gray-800 shadow-md hover:bg-gray-700 cursor-pointer"
-                  onClick={() =>
-                    setExpandedOrderId(
-                      expandedOrderId === order.id ? null : order.id
-                    )
-                  }
-                >
-                  <div className="flex justify-between mb-2">
-                    <div>
-                      <p className="text-lg font-medium">
-                        {customBotMap[order.custom_robot_id]?.name ||
-                          "Can't load Bot Name"}
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        Date: {order.created_at}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Order ID: {order.id}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Quantity: {order.quantity}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Total price: {order.total_price}
-                      </p>
-                    </div>
-                    <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
-                      {order.status}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 grid-rows-1">
-                    <OrderStatusStepper status={order.status} />
-                    {expandedOrderId === order.id ? (
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        className="transition-all duration-500 w-5/6 h-25 animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:w-4/5 h-60"
-                      >
-                        <Preview3dWindow botId={order.custom_robot_id} />
-                      </div>
-                    ) : (
-                      <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
-                        <span className="block sm:hidden">Tap to preview</span>
-                        <span className="hidden sm:block">
-                          Tap to preview your design
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  order={order}
+                  setExpandedOrderId={setExpandedOrderId}
+                  expandedOrderId={expandedOrderId}
+                  customBotMap={customBotMap}
+                />
               ))
           ) : (
             <p>No ongoing orders</p>
@@ -153,64 +159,13 @@ const Order = ({ userId }) => {
             ordersList
               .filter((order) => pastStatuses.includes(order.status))
               .map((order) => (
-                <div
-                  key={order.id}
-                  className="border rounded-2xl p-5 bg-gray-800 shadow-md"
-                >
-                  {/* Header → only this toggles expand/collapse */}
-                  <div
-                    className="flex justify-between mb-2 cursor-pointer"
-                    onClick={() =>
-                      setExpandedOrderId(
-                        expandedOrderId === order.id ? null : order.id
-                      )
-                    }
-                  >
-                    <div>
-                      <p className="text-lg font-medium">
-                        {customBotMap[order.custom_robot_id]?.name ||
-                          "Can't load Bot Name"}
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        Date: {order.created_at}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Order ID: {order.id}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Quantity: {order.quantity}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Total price: {order.total_price}
-                      </p>
-                    </div>
-                    <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
-                      {order.status}
-                    </span>
-                  </div>
-
-                  {/* Content section */}
-                  <div className="grid grid-cols-2 grid-rows-1">
-                    <OrderStatusStepper status={order.status} />
-                    {expandedOrderId === order.id ? (
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        className="transition-all duration-500 animate-fade-in-scale w-2/5 h-full rounded-2xl overflow-hidden justify-self-center self-center"
-                      >
-                        <Preview3dWindow botId={order.custom_robot_id} />
-                      </div>
-                    ) : (
-                      <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
-                        <span className="block sm:hidden">Tap to preview</span>
-                        <span className="hidden sm:block">
-                          Tap to preview your design
-                        </span>
-                      </p>
-                    )}
-                  </div>
-                </div>
+                <OrderCard
+                  key={order.orderId}
+                  order={order}
+                  setExpandedOrderId={setExpandedOrderId}
+                  expandedOrderId={expandedOrderId}
+                  customBotMap={customBotMap}
+                />
               ))
           ) : (
             <p>No past orders</p>
