@@ -20,11 +20,11 @@ export default class Bots {
             const data = await response.json();
 
             if (response.ok) {
-                console.log(`✅ ${data.message}`);
-                return { success: true, message: data.message };
+                console.log(`${data.message}`);
+                return { success: true, message: data.message, ids: data.ids };
             } else {
-                console.warn(`⚠️ ${data.error}`);
-                return { success: false, message: data.error };
+                console.warn(`${data.error}`);
+                return { success: false, message: data.error, ids: null };
             }
         } catch (error) {
             console.error("🚨 Network error while creating custom bot:", error);
