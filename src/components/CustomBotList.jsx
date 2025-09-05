@@ -38,17 +38,43 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
       });
 
       // Handle structured response tuple of 2 elements (success(boolean), message(string))
-      if (result?.success) {
-        console.log(`Bot created: ${result.message}`);
+      if (result?.success && bot) {
+        //fetch all parts of the to-be-duplicated bot
+        const duplicatedBotParts = await botApi.getPartsFromCustomBot(bot.id);
+        //get the id of the newly created bot
+        //if duplicated bot has parts, update the parts to the new duplicated bot
+        if (
+          result.ids.length === 1 &&
+          duplicatedBotParts &&
+          Object.keys(duplicatedBotParts).length > 0
+        ) {
+          for (const part of duplicatedBotParts) {
+            await botApi.addPartToBot({
+              part_id: part.robot_part_id,
+              custom_robot_id: result.ids[0],
+              amount: part.amount,
+              direction: part.direction,
+            });
+          }
+        }
         //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
-        refetchCustomBots();
+      } else {
+        console.warn(
+          `Failed to duplicate bot: ${result?.message || "Unknown error"}`
+        );
+      }
+      if (result?.success && !bot) {
+        console.log(`New bot created: ${result.message}`);
+        //refresh the bot list here - refetchCustomBots is a props function from parent CustomBot to trigger fetching custom bots
       } else {
         console.warn(
           `Failed to create bot: ${result?.message || "Unknown error"}`
         );
       }
+      refetchCustomBots();
     } catch (err) {
       console.error("Unexpected error while creating bot:", err);
+      refetchCustomBots();
     }
   };
 
