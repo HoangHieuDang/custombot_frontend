@@ -113,7 +113,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
     // Only pending orders should be deletable
     // when the the pending order is deleted
     const api = new Orders();
-    await api.deleteOrder({ id: orderId });
+    await api.deleteOrder(orderId);
     // refetch cart again to update the cart
     fetchCart();
   };
