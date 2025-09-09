@@ -463,7 +463,7 @@ const CustomBotPanel = forwardRef(
     return (
       <>
         {/* Panel for settings options and customBot Name edit */}
-        <div className="transition-all duration-500 animate-fade-in-scale bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl w-10/12">
+        <div className="transition-all duration-500 animate-fade-in-scale bg-gray-800 ml-auto mr-auto mt-5 rounded-t-2xl">
           {botStatus === "in_progress" ? (
             <div className="flex flex-column items-center justify-center text-amber-50 font-extralight mb-5 ml-5">
               <button

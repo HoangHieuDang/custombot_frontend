@@ -86,14 +86,14 @@ const CustomBotList = ({ userId, customBots, refetchCustomBots }) => {
 
   return (
     <>
-      <div className="h-1/1 w-screen">
-        <h1 className="text-4xl font-extralight p-3 text-center">
+      <div className="p-6 max-w-5xl mx-auto text-white">
+        <h1 className="text-4xl font-extralight mb-6">
           Custombot lists
         </h1>
         <div
-          className={`transition-all duration-500 animate-fade-in-scale w-12/13 bg-gray-700 rounded-3xl p-4 overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
+          className={`transition-all duration-500 animate-fade-in-scale bg-gray-700 rounded-3xl overflow-y-auto ml-auto mr-auto hover:border-1 hover:border-amber-200 ${
             selectedBot
-              ? "max-h-40 ml-5 mr-5 pr-3 max-w-10/12 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
+              ? "max-h-40 ml-5 mr-5 pr-3 max-w-full [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-300 [&::-webkit-scrollbar-thumb]:rounded-full"
               : "max-h-9/10"
           }`}
         >

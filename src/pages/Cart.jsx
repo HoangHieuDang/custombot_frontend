@@ -3,6 +3,7 @@ import Preview3dWindow from "../components/Preview3dWindow";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
 import { useNavigate } from "react-router-dom";
+import OrderPartsList from "../components/OrderPartsList";
 
 export default function Cart({ userId, setIsOrderOpen }) {
   const navigate = useNavigate();
@@ -182,37 +183,56 @@ export default function Cart({ userId, setIsOrderOpen }) {
                           Price: {order.total_price}
                         </p>
                       </div>
-                      <div className="mt-4 grid grid-cols-2 gap-5 justify-baseline items-center">
-                        <div className="pl-0 justify-self-start items-center">
+                      <div
+                        className={`mt-4 grid md:grid-cols-3 md:items-start ${
+                          expandedOrderId === order.id
+                            ? "grid-cols-1 gap-2"
+                            : "grid-cols-2 grid-rows-1"
+                        }`}
+                      >
+                        {/* Parts + Preview */}
+                        <div className="md:col-span-2">
                           {expandedOrderId === order.id ? (
-                            <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                              className="h-60 transition-all duration-500 w-full animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-center self-center md:w-full"
-                            >
-                              <Preview3dWindow botId={order.custom_robot_id} />
+                            <div className="grid grid-cols-1 grid-rows-2 gap-2 md:grid-cols-2 md:grid-rows-1">
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="h-50 w-full overflow-auto rounded-2xl bg-gray-900 text-white border md:h-60"
+                              >
+                                <OrderPartsList order={order} />
+                              </div>
+                              <div
+                                onClick={(e) => e.stopPropagation()}
+                                className="h-50 w-full rounded-2xl overflow-hidden shadow-lg md:h-60"
+                              >
+                                <Preview3dWindow
+                                  botId={order.custom_robot_id}
+                                />
+                              </div>
                             </div>
                           ) : (
-                            <p className="pt-3 text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-start">
-                              <span className="block sm:hidden pl-0 text-start">
+                            <p className="text-xs font-extralight text-amber-100">
+                              <span className="block sm:hidden">
                                 Tap to preview
                               </span>
-                              <span className="hidden sm:block pl-0 text-start">
+                              <span className="hidden sm:block">
                                 Tap to preview your design
                               </span>
                             </p>
                           )}
                         </div>
-                        <img
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeletePendingOrder(order.id);
-                          }}
-                          className="h-6 w-6 cursor-pointer hover:brightness-75 hover:h-7 hover:w-7 justify-self-end self-end-safe"
-                          src="./assets/ui_components/trash_can.png"
-                          alt="delete-icon"
-                        />
+
+                        {/* Trash icon */}
+                        <div className="mt-4 md:flex justify-end items-end md:col-span-1 md:mt-0">
+                          <img
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeletePendingOrder(order.id);
+                            }}
+                            className="h-6 w-6 justify-self-end cursor-pointer hover:brightness-75 hover:h-7 hover:w-7"
+                            src="./assets/ui_components/trash_can.png"
+                            alt="delete-icon"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
