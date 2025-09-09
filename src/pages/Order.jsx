@@ -2,6 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 import Orders from "../api/ordersApi";
 import Bots from "../api/customBotsApi";
 import Preview3dWindow from "../components/Preview3dWindow";
+import OrderPartsList from "../components/OrderPartsList";
 
 const OrderStatusStepper = ({ status }) => {
   //"paid", "production", "shipping", "received"
@@ -9,11 +10,11 @@ const OrderStatusStepper = ({ status }) => {
   const currentStepIndex = steps.indexOf(status);
 
   return (
-    <div className="flex flex-col gap-0 min-w-0 text-sm mt-auto mb-auto md:gap-2">
+    <div className="flex flex-col gap-0 min-w-0 text-sm mt-0 mb-auto md:gap-2">
       {steps.map((step, index) => (
         <div key={index} className="flex items-center gap-2">
           <div
-            className={`w-4 h-4 rounded-full border-2 ${
+            className={`hidden md:w-3 md:h-3 md:rounded-full md:border-1 md:block ${
               index <= currentStepIndex
                 ? "bg-orange-300 border-orange-400"
                 : "bg-gray-200 border-gray-300"
@@ -47,39 +48,72 @@ const OrderCard = ({
       }
     >
       <div className="flex justify-between mb-2">
-        <div>
-          <p className="text-lg font-medium">
+        <div className="flex flex-col overflow-auto max-w-1/2">
+          <p className="text-lg font-medium text-amber-200 mb-1">
             {customBotMap[order.custom_robot_id]?.name || "Can't load Bot Name"}
           </p>
-          <p className="text-sm text-gray-400">Date: {order.created_at}</p>
-          <p className="text-sm text-gray-500">Order ID: {order.id}</p>
-          <p className="text-sm text-gray-500">Quantity: {order.quantity}</p>
-          <p className="text-sm text-gray-500">
-            Total price: {order.total_price}
+          <p className="text-sm">
+            <span className="text-amber-100">Order Date: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.created_at}
+            </span>
+          </p>
+          <p className="text-sm text-gray-100">
+            <span className="text-amber-100">Order ID: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.id}
+            </span>
+          </p>
+          <p className="text-sm text-gray-100">
+            <span className="text-amber-100">Quantity: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.quantity}
+            </span>
+          </p>
+          <p className="text-sm text-gray-100">
+            <span className="text-amber-100">Total price: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.total_price}
+            </span>
+          </p>
+          <p className="text-sm text-gray-100">
+            <span className="text-amber-100">Shipping Address: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.shipping_address}
+            </span>
+          </p>
+          <p className="text-sm text-gray-100">
+            <span className="text-amber-100">Shipping Date: </span>
+            <span className="text-gray-100 font-extralight pl-1">
+              {order.shipping_date && order.status === "shipping"
+                ? order.shipping_date
+                : "N/A"}
+            </span>
           </p>
         </div>
-        <span className="text-xs text-orange-500 self-start bg-orange-100 px-3 py-1 rounded-full">
-          {order.status}
-        </span>
-      </div>
-      <div className="grid grid-cols-2 grid-rows-1">
         <OrderStatusStepper status={order.status} />
-        {expandedOrderId === order.id ? (
+      </div>
+
+      {expandedOrderId === order.id ? (
+        <div className="bg-gray-800 p-2 rounded-2xl grid grid-cols-1 grid-rows-2 gap-2 md:grid-cols-2 md:grid-rows-1 md:gap-2">
+          <div className="h-50 w-full overflow-auto animate-fade-in-scale border-1 rounded-2xl bg-gray-900 text-white md:h-60">
+            <OrderPartsList order={order} />
+          </div>
           <div
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="transition-all duration-500 w-5/6 h-25 animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:w-4/5 h-60"
+            className="transition-all duration-500 h-50 w-full animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:h-60"
           >
             <Preview3dWindow botId={order.custom_robot_id} />
           </div>
-        ) : (
-          <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
-            <span className="block sm:hidden">Tap to preview</span>
-            <span className="hidden sm:block">Tap to preview your design</span>
-          </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <p className="text-0.5 font-extralight animate-fade-in-color text-amber-100 justify-self-end self-end">
+          <span className="block sm:hidden">Tap to preview</span>
+          <span className="hidden sm:block">Tap to preview your design</span>
+        </p>
+      )}
     </div>
   );
 };
@@ -128,11 +162,13 @@ const Order = ({ userId }) => {
   const pastStatuses = ["received", "cancelled"];
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-gray-900 text-white">
-      <h1 className="text-4xl font-light mb-6">Your Orders</h1>
+    <div className="p-6 max-w-5xl mx-auto text-white">
+      <h1 className="text-4xl font-extralight mb-6">Your Orders</h1>
 
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Ongoing Orders</h2>
+      <section className="mb-10 bg-gray-600 p-4 rounded-2xl">
+        <h2 className="text-2xl font-extralight mb-4 text-center">
+          Ongoing Orders
+        </h2>
         <div className="grid gap-6">
           {ordersList && ordersList.length > 0 ? (
             ordersList
@@ -152,10 +188,14 @@ const Order = ({ userId }) => {
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-semibold mb-4">Past Orders</h2>
+      <section className="bg-gray-600 p-4 rounded-2xl">
+        <h2 className="text-2xl font-extralight mb-4 text-center">
+          Past Orders
+        </h2>
         <div className="grid gap-6">
-          {ordersList && ordersList.length > 0 ? (
+          {ordersList &&
+          ordersList.filter((order) => pastStatuses.includes(order.status))
+            .length > 0 ? (
             ordersList
               .filter((order) => pastStatuses.includes(order.status))
               .map((order) => (
@@ -168,7 +208,7 @@ const Order = ({ userId }) => {
                 />
               ))
           ) : (
-            <p>No past orders</p>
+            <p className="text-center font-extralight text-gray-400" >No past orders</p>
           )}
         </div>
       </section>

@@ -42,8 +42,8 @@ const Profile = ({ user, fetchUser }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 text-white">
-      <h1 className="text-4xl font-extralight p-3">Your Profile</h1>
+    <div className="p-6 max-w-5xl mx-auto text-white">
+      <h1 className="text-4xl font-extralight mb-6">Your Profile</h1>
 
       {/* Profile Information */}
       {user ? (
