@@ -6,7 +6,7 @@ const Profile = ({ user, fetchUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isUserUpdateSuccess, setIsUserUpdateSuccess] = useState(false);
-// When the user prop changes, set email and username again
+  // When the user prop changes, set email and username again
   useEffect(() => {
     setEmail(user.email);
     setUserName(user.username);
@@ -48,16 +48,20 @@ const Profile = ({ user, fetchUser }) => {
       {/* Profile Information */}
       {user ? (
         <div className="bg-gray-700 rounded-xl p-6 mb-8 shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Basic Info</h2>
+          <h2 className="text-xl font-extralight mb-4">Basic Info</h2>
           <p>
-            <strong>Username:</strong> {user.username}
+            <span className="text-amber-200 font-extralight">Username: </span>
+
+            <span>{user.username}</span>
           </p>
           <p>
-            <strong>Email:</strong> {user.email}
+            <span className="text-amber-200 font-extralight">Email: </span>
+
+            <span>{user.email}</span>
           </p>
           <p>
-            <strong>Joined:</strong>{" "}
-            {new Date(user.created_at).toLocaleString()}
+            <span className="text-amber-200 font-extralight">Joined: </span>
+            <span>{new Date(user.created_at).toLocaleString()}</span>
           </p>
         </div>
       ) : (
@@ -66,10 +70,10 @@ const Profile = ({ user, fetchUser }) => {
 
       {/* Edit Username, Email and Password */}
       <div className="bg-gray-700 rounded-xl p-6 mb-8 shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Edit Credentials</h2>
+        <h2 className="text-xl font-extralight mb-4">Edit Credentials</h2>
         <div className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm font-medium">User Name</label>
+            <label className="block mb-1 text-sm font-extralight text-amber-200">User Name</label>
             <input
               type="username"
               className="w-full p-2 bg-gray-600 rounded-md border border-gray-500"
@@ -79,7 +83,7 @@ const Profile = ({ user, fetchUser }) => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">Email</label>
+            <label className="block mb-1 text-sm font-extralight text-amber-200">Email</label>
             <input
               type="email"
               className="w-full p-2 bg-gray-600 rounded-md border border-gray-500"
@@ -89,7 +93,7 @@ const Profile = ({ user, fetchUser }) => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium">
+            <label className="block mb-1 text-sm font-extralight text-amber-200">
               New Password
             </label>
             <input

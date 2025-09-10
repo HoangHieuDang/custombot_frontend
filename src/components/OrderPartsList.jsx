@@ -9,10 +9,14 @@ const OrderPartsList = ({ order }) => {
       console.warn("order not given!");
       return;
     }
-    const botApi = new Bots();
-    const data = await botApi.getPartsFromCustomBot(order.custom_robot_id);
-    console.log("data from getPartsFromCustomBot:", data);
-    setPartsList(data);
+    try {
+      const botApi = new Bots();
+      const data = await botApi.getPartsFromCustomBot(order.custom_robot_id);
+      console.log("data from getPartsFromCustomBot:", data);
+      setPartsList(data);
+    } catch (error) {
+      console.error("Error fetching parts:", error);
+    }
   };
   useEffect(() => {
     fetchParts();
