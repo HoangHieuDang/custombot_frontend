@@ -95,15 +95,15 @@ const OrderCard = ({
       </div>
 
       {expandedOrderId === order.id ? (
-        <div className="bg-gray-800 p-2 rounded-2xl grid grid-cols-1 grid-rows-2 gap-2 md:grid-cols-2 md:grid-rows-1 md:gap-2">
-          <div className="h-50 w-full overflow-auto animate-fade-in-scale border-1 rounded-2xl bg-gray-900 text-white md:h-60">
+        <div className="p-2 rounded-2xl grid grid-cols-1 grid-rows-2 gap-2 md:grid-cols-2 md:grid-rows-1 md:gap-2">
+          <div className="h-50 w-full overflow-auto animate-fade-in-scale border-1 rounded-2xl bg-gray-900 text-white md:h-60 hover:border-1 hover:border-amber-200 ">
             <OrderPartsList order={order} />
           </div>
           <div
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="transition-all duration-500 h-50 w-full animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:h-60"
+            className="transition-all duration-500 h-50 w-full animate-fade-in-scale border-1 rounded-2xl overflow-hidden shadow-lg justify-self-end align-self-center md:h-60 hover:border-1 hover:border-amber-200"
           >
             <Preview3dWindow botId={order.custom_robot_id} />
           </div>

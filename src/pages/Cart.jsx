@@ -128,7 +128,29 @@ export default function Cart({ userId, setIsOrderOpen }) {
           </h1>
           {cartOrders.length === 0 ? (
             !isPaymentSuccess && (
-              <p className="text-center text-amber-100">Your cart is empty</p>
+              <div className="flex flex-col justify-center pt-10 pb-10 pl-5 pr-5 rounded-2xl bg-gray-700 max-w-6/7 md:max-w-3/6 m-auto">
+                <p className="text-center text-amber-100 mb-5 font-extralight">
+                  Your cart is empty
+                </p>
+                <div className="w-max-5/8 ml-auto mr-auto">
+                  <button
+                    className="w-full self-center p-1 mb-5 bg-gray-800 text-white font-extralight rounded hover:bg-gray-600 hover:text-amber-400 cursor-pointer"
+                    onClick={() => {
+                      navigate("/order");
+                    }}
+                  >
+                    Track your orders
+                  </button>
+                  <button
+                    className="w-full self-center p-1 mb-2 bg-gray-800 text-white font-extralight rounded hover:bg-gray-600 hover:text-amber-400 cursor-pointer"
+                    onClick={() => {
+                      navigate("/custombot");
+                    }}
+                  >
+                    Customize another bot
+                  </button>
+                </div>
+              </div>
             )
           ) : (
             <div
@@ -222,7 +244,7 @@ export default function Cart({ userId, setIsOrderOpen }) {
                         </div>
 
                         {/* Trash icon */}
-                        <div className="mt-4 md:flex justify-end items-end md:col-span-1 md:mt-0">
+                        <div className="h-full mt-4 md:flex justify-end items-end md:col-span-1 md:mt-0">
                           <img
                             onClick={(e) => {
                               e.stopPropagation();
